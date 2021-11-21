@@ -65,8 +65,8 @@
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="5dp"
         android:backgroundTint="@color/white"
-        android:inputType="textPassword"
         android:hint="Пароль"
+        android:inputType="textPassword"
         android:textColorHighlight="#FFFFFF"
         android:textColorHint="#FFFFFF"
         android:textColorLink="#FFFFFF"
@@ -82,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
-        android:background="@drawable/signin_btn_bg"
+        android:background="@drawable/frame_sign_in"
         android:text="Войти"
         android:textAllCaps="false"
         android:textSize="30sp"
@@ -94,8 +94,8 @@
         android:id="@+id/registration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginBottom="20dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -108,10 +108,10 @@
 
         <TextView
             style="@style/text"
-            android:textColor="@color/yellow"
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
             android:text="Зарегистрируйся"
+            android:textColor="@color/yellow"
             android:textSize="20dp" />
     </LinearLayout>
 

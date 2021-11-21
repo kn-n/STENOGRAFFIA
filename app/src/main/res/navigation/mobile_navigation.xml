@@ -21,7 +21,11 @@
         android:id="@+id/nav_routes"
         android:name="com.example.stenograffia.ui.routes.RoutesFragment"
         android:label="@string/menu_routes"
-        tools:layout="@layout/fragment_routes" />
+        tools:layout="@layout/fragment_routes" >
+        <action
+            android:id="@+id/action_nav_routes_to_routeFragment"
+            app:destination="@id/routeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_surface_exchange"
@@ -34,4 +38,10 @@
         android:name="com.example.stenograffia.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/routeFragment"
+        android:name="com.example.stenograffia.ui.route.RouteFragment"
+        android:label="@string/fragment_route_one"
+        tools:layout="@layout/fragment_route" />
 </navigation>

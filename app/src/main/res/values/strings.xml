@@ -8,9 +8,19 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!--labels-->
     <string name="menu_profile">Мой профиль</string>
     <string name="menu_map">Карта</string>
     <string name="menu_routes">Маршруты</string>
     <string name="menu_surface_exchange">Биржа поверхностей</string>
     <string name="menu_settings">Настройки</string>
+    <string name="fragment_route_one">Маршрут 1</string>
+
+    <!--routes fragment-->
+    <string name="all_routes">Все маршруты</string>
+    <string name="my_routes">Мои маршруты</string>
+
+    <!--route element-->
+    <string name="popular_objects">Популярные объекты:</string>
+    <string name="route_length">Длина маршрута:</string>
 </resources>
