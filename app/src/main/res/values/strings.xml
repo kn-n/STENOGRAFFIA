@@ -20,6 +20,9 @@
     <string name="title">STENOGRAFFIA INTERNATIONAL STREET ART FESTIVAL</string>
     <string name="hint_login">Логин</string>
     <string name="hint_password">Пароль</string>
+    <string name="sign_in">Войти</string>
+    <string name="do_not_have_acc">Еще нет аккаунта?</string>
+    <string name="registration">Зарегистрируйся</string>
 
     <!--routes fragment-->
     <string name="all_routes">Все маршруты</string>
@@ -42,4 +45,14 @@
     <string name="hint_address">Адрес</string>
     <string name="hint_description">Описание</string>
     <string name="send">Отправить</string>
+
+    <!--profile fragment-->
+    <string name="btn_edit">Редактировать</string>
+
+    <!--settings fragment-->
+    <string name="payment_method">Способ оплаты</string>
+    <string name="confidential">Конфиденциальность</string>
+    <string name="about_us">О нас</string>
+    <string name="help">Помощь</string>
+    <string name="log_out">Выйти</string>
 </resources>

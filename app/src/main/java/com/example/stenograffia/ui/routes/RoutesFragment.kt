@@ -26,7 +26,6 @@ class RoutesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_routes, container, false)
 
         //Find view by id
-//        val textView: TextView = root.findViewById(R.id.text_slideshow)
 //        val routeOne: Button = root.findViewById(R.id.route_one)
         val allRoutes: TextView = root.findViewById(R.id.all_routes)
         val myRoutes: TextView = root.findViewById(R.id.my_routes)
@@ -36,7 +35,6 @@ class RoutesFragment : Fragment() {
             ViewModelProvider(this).get(RoutesViewModel::class.java)
 
         routesViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
         })
 
 //        routeOne.setOnClickListener { view ->

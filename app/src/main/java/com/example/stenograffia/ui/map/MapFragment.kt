@@ -25,10 +25,13 @@ class MapFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_map, container, false)
+
+        //Find by id
+        map = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
         mapViewModel =
             ViewModelProvider(this).get(MapViewModel::class.java)
 
-        map = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         map.onCreate(savedInstanceState)
         map.getMapAsync(OnMapReadyCallback {
             googleMap = it

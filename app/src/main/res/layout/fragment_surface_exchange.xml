@@ -40,11 +40,11 @@
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/what_block_btn"
+                android:id="@+id/btn_what_block"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="end"
-                android:background="@drawable/selector_what_block_btn" />
+                android:background="@drawable/selector_btn_what_block" />
 
         </FrameLayout>
 

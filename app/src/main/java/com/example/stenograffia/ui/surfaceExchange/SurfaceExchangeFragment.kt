@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,13 +23,17 @@ class SurfaceExchangeFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_surface_exchange, container, false)
 
         //Find view by id
-//        val textView: TextView = root.findViewById(R.id.text_surface_exchange)
+        val btnWhatBlock = root.findViewById<Button>(R.id.btn_what_block)
+        val whatTextBlock = root.findViewById<FrameLayout>(R.id.what_text_block)
+        val btnAddPhotosSurface = root.findViewById<ImageButton>(R.id.btn_add_photos_surface)
+        val surfaceAddress = root.findViewById<EditText>(R.id.address)
+        val surfaceDescription = root.findViewById<EditText>(R.id.description)
+        val btnSend = root.findViewById<Button>(R.id.btn_edit)
 
         surfaceExchangeViewModel =
             ViewModelProvider(this).get(SurfaceExchangeViewModel::class.java)
 
         surfaceExchangeViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
         })
 
         return root

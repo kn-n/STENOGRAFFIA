@@ -73,7 +73,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="45dp"
         android:background="@drawable/bg_btn"
-        android:text="Войти"
+        android:text="@string/sign_in"
         android:textAllCaps="false"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,16 +93,16 @@
         <TextView
             style="@style/text"
             android:gravity="center"
-            android:text="Еще нет аккаунта?"
-            android:textSize="20dp" />
+            android:text="@string/do_not_have_acc"
+            android:textSize="20sp" />
 
         <TextView
             style="@style/text"
             android:fontFamily="@font/roboto_medium"
             android:gravity="center"
-            android:text="Зарегистрируйся"
+            android:text="@string/registration"
             android:textColor="@color/yellow"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
 
