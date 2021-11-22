@@ -16,6 +16,11 @@
     <string name="menu_settings">Настройки</string>
     <string name="fragment_route_one">Маршрут 1</string>
 
+    <!--sign in activity-->
+    <string name="title">STENOGRAFFIA INTERNATIONAL STREET ART FESTIVAL</string>
+    <string name="hint_login">Логин</string>
+    <string name="hint_password">Пароль</string>
+
     <!--routes fragment-->
     <string name="all_routes">Все маршруты</string>
     <string name="my_routes">Мои маршруты</string>
@@ -23,4 +28,18 @@
     <!--route element-->
     <string name="popular_objects">Популярные объекты:</string>
     <string name="route_length">Длина маршрута:</string>
+
+    <!--surface exchange fragment-->
+    <string name="what_title">&lt;&lt;What!?&gt;&gt;</string>
+    <string name="what_text">Открытый сбор городских поверхностей, которые могут
+        стать новыми арт-объектами.<br /><br />
+        Зайдите в панорамы электронных карт и сделайте скриншоты стены/будки/забора.
+        Лучше с нескольких ракурсов и издалека, в контексте окружающего
+        пространства. Если же вы идете на работу, решили выгулять собаку
+        или вынести мусор — сделайте реальные фото.<br /><br />
+        Добавте фотографии, запишите адрес и краткое
+        описание и нажмите кнопку &lt;Отправить&gt;.</string>
+    <string name="hint_address">Адрес</string>
+    <string name="hint_description">Описание</string>
+    <string name="send">Отправить</string>
 </resources>

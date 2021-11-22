@@ -20,13 +20,18 @@ class SurfaceExchangeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val root = inflater.inflate(R.layout.fragment_surface_exchange, container, false)
+
+        //Find view by id
+//        val textView: TextView = root.findViewById(R.id.text_surface_exchange)
+
         surfaceExchangeViewModel =
             ViewModelProvider(this).get(SurfaceExchangeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_surface_exchange, container, false)
-        val textView: TextView = root.findViewById(R.id.text_surface_exchange)
+
         surfaceExchangeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
+//            textView.text = it
         })
+
         return root
     }
 }
