@@ -14,7 +14,8 @@
     <string name="menu_routes">Маршруты</string>
     <string name="menu_surface_exchange">Биржа поверхностей</string>
     <string name="menu_settings">Настройки</string>
-    <string name="fragment_route_one">Маршрут 1</string>
+    <string name="fragment_route_one">Title</string>
+    <string name="fragment_edit_acc">Редактирование</string>
 
     <!--sign in activity-->
     <string name="title">STENOGRAFFIA INTERNATIONAL STREET ART FESTIVAL</string>
@@ -22,7 +23,7 @@
     <string name="hint_password">Пароль</string>
     <string name="sign_in">Войти</string>
     <string name="do_not_have_acc">Еще нет аккаунта?</string>
-    <string name="registration">Зарегистрируйся</string>
+    <string name="register">Зарегистрируйся</string>
 
     <!--routes fragment-->
     <string name="all_routes">Все маршруты</string>
@@ -55,4 +56,18 @@
     <string name="about_us">О нас</string>
     <string name="help">Помощь</string>
     <string name="log_out">Выйти</string>
+
+    <!--route fragment-->
+    <string name="price">Цена:</string>
+    <string name="buy">Купить</string>
+
+    <!--edit acc fragment-->
+    <string name="hint_user_name">Имя</string>
+    <string name="hint_email">Email</string>
+    <string name="save">Сохранить</string>
+
+    <!--registration activity-->
+    <string name="register1">Зарегистрироваться</string>
+    <string name="registration">Регистрация</string>
+    <string name="already_have_acc">Уже есть аккаунт?</string>
 </resources>

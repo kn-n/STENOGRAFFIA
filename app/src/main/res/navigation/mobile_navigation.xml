@@ -9,7 +9,11 @@
         android:id="@+id/nav_profile"
         android:name="com.example.stenograffia.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_editAccFragment"
+            app:destination="@id/editAccFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_map"
@@ -44,4 +48,14 @@
         android:name="com.example.stenograffia.ui.route.RouteFragment"
         android:label="@string/fragment_route_one"
         tools:layout="@layout/fragment_route" />
+
+    <fragment
+        android:id="@+id/editAccFragment"
+        android:name="com.example.stenograffia.ui.editAcc.EditAccFragment"
+        android:label="@string/fragment_edit_acc"
+        tools:layout="@layout/fragment_edit_acc" >
+        <action
+            android:id="@+id/action_editAccFragment_to_nav_profile"
+            app:destination="@id/nav_profile" />
+    </fragment>
 </navigation>

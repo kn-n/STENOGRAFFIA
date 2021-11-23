@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.stenograffia.MenuActivity
 import com.example.stenograffia.R
+import com.example.stenograffia.SignInActivity
 import com.example.stenograffia.ui.surfaceExchange.SurfaceExchangeViewModel
 
 class SettingsFragment : Fragment() {
@@ -43,6 +44,8 @@ class SettingsFragment : Fragment() {
         })
 
         logOut.setOnClickListener {
+            val intent = Intent(context, SignInActivity::class.java)
+            startActivity(intent)
         }
 
         return root

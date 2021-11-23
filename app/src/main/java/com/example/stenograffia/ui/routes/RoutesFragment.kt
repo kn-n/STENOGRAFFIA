@@ -35,6 +35,7 @@ class RoutesFragment : Fragment() {
             ViewModelProvider(this).get(RoutesViewModel::class.java)
 
         routesViewModel.text.observe(viewLifecycleOwner, Observer {
+
         })
 
 //        routeOne.setOnClickListener { view ->

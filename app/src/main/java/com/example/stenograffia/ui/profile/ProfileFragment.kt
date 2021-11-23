@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.example.stenograffia.R
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -35,6 +36,11 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.text.observe(viewLifecycleOwner, Observer {
         })
+
+        btnEdit.setOnClickListener { view ->
+            view.findNavController().navigate(R.id.editAccFragment)
+        }
+
         return root
     }
 }
