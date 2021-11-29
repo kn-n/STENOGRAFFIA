@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "853799927087",
+    "project_id": "stenograffia",
+    "storage_bucket": "stenograffia.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853799927087:android:1cb1aa96f88fdbb49bb5da",
+        "android_client_info": {
+          "package_name": "com.example.stenograffia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853799927087-9121p0la36ubthccjog6npa45pm1s9fb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.stenograffia",
+            "certificate_hash": "14bdde7a4c99ebc7a52243a74c7246620669ac61"
+          }
+        },
+        {
+          "client_id": "853799927087-f6ka8skoutmr5b12p51c0c4k37cmj6tn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8w7O72-3S5SrTmOeIgPK3LB0wAt3DZlw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853799927087-f6ka8skoutmr5b12p51c0c4k37cmj6tn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

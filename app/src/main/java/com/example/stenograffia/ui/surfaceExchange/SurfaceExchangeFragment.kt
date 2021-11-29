@@ -36,6 +36,20 @@ class SurfaceExchangeFragment : Fragment() {
         surfaceExchangeViewModel.text.observe(viewLifecycleOwner, Observer {
         })
 
+        openAndCloseInfBox(btnWhatBlock, whatTextBlock)
+
         return root
+    }
+
+    private fun openAndCloseInfBox(btnWhatBlock: View, whatTextBlock: View) {
+        btnWhatBlock.setOnClickListener {
+            if (!btnWhatBlock.isActivated) {
+                whatTextBlock.visibility = View.GONE
+                btnWhatBlock.isActivated = true
+            } else {
+                whatTextBlock.visibility = View.VISIBLE
+                btnWhatBlock.isActivated = false
+            }
+        }
     }
 }
