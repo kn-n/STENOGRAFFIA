@@ -16,6 +16,8 @@ import androidx.navigation.findNavController
 import com.example.stenograffia.MenuActivity
 import com.example.stenograffia.R
 import com.example.stenograffia.SignInActivity
+import com.example.stenograffia.ui.data.firebase.AUTH
+import com.example.stenograffia.ui.data.firebase.initFirebase
 import com.example.stenograffia.ui.surfaceExchange.SurfaceExchangeViewModel
 
 class SettingsFragment : Fragment() {
@@ -27,6 +29,7 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        initFirebase()
 
         val root = inflater.inflate(R.layout.fragment_settings, container, false)
 
@@ -44,6 +47,7 @@ class SettingsFragment : Fragment() {
         })
 
         logOut.setOnClickListener {
+            AUTH.signOut()
             val intent = Intent(context, SignInActivity::class.java)
             startActivity(intent)
         }
