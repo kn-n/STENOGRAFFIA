@@ -1,6 +1,7 @@
 package com.example.stenograffia
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,20 +10,32 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
-import com.example.stenograffia.R
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.example.stenograffia.ui.data.Models.User
 import com.example.stenograffia.ui.data.firebase.AUTH
 import com.example.stenograffia.ui.data.firebase.addNewUser
 import com.example.stenograffia.ui.data.firebase.initFirebase
-import com.theartofdev.edmodo.cropper.CropImage
 import de.hdodenhof.circleimageview.CircleImageView
 
 class RegistrationActivity : AppCompatActivity() {
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            // use the returned uri
+            val uriContent = result.uriContent
+            val uriFilePath = result.getUriFilePath(this) // optional usage
+        } else {
+            // an error occurred
+            val exception = result.error
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
         initFirebase()
-
         //Find view by id
         val img = findViewById<CircleImageView>(R.id.img)
         val username = findViewById<EditText>(R.id.username)
@@ -32,9 +45,7 @@ class RegistrationActivity : AppCompatActivity() {
         val signIn = findViewById<LinearLayout>(R.id.sign_in)
 
         img.setOnClickListener {
-            CropImage.activity()
-                .start(this)
-                //123123123123
+            startCrop()
         }
 
         btnRegistration.setOnClickListener {
@@ -65,4 +76,12 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
+    private fun startCrop() {
+        // start picker to get image for cropping and then use the image in cropping activity
+        cropImage.launch(
+            options {
+                setGuidelines(CropImageView.Guidelines.ON)
+            }
+        )
+    }
 }
