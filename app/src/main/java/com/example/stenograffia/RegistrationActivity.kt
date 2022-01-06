@@ -14,6 +14,7 @@ import com.example.stenograffia.ui.data.Models.User
 import com.example.stenograffia.ui.data.firebase.AUTH
 import com.example.stenograffia.ui.data.firebase.addNewUser
 import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.theartofdev.edmodo.cropper.CropImage
 import de.hdodenhof.circleimageview.CircleImageView
 
 class RegistrationActivity : AppCompatActivity() {
@@ -29,6 +30,11 @@ class RegistrationActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val btnRegistration = findViewById<Button>(R.id.registration)
         val signIn = findViewById<LinearLayout>(R.id.sign_in)
+
+        img.setOnClickListener {
+            CropImage.activity()
+                .start(this)
+        }
 
         btnRegistration.setOnClickListener {
             if (username.text.isNotEmpty()
@@ -50,14 +56,12 @@ class RegistrationActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(baseContext, "Заполните все поля", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         signIn.setOnClickListener {
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
         }
-
-
     }
+
 }

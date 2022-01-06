@@ -29,7 +29,6 @@ class EditAccFragment : Fragment() {
         //Find view by id
         val img = root.findViewById<CircleImageView>(R.id.img)
         val username = root.findViewById<EditText>(R.id.username)
-        val login = root.findViewById<EditText>(R.id.login)
         val email = root.findViewById<EditText>(R.id.email)
         val password = root.findViewById<EditText>(R.id.password)
         val btnSave = root.findViewById<Button>(R.id.save)

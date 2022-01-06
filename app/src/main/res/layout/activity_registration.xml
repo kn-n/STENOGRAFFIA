@@ -50,17 +50,6 @@
         app:layout_constraintTop_toBottomOf="@id/img" />
 
     <EditText
-        android:id="@+id/login"
-        style="@style/edit_text"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="10dp"
-        android:hint="@string/hint_login"
-        android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/username" />
-
-    <EditText
         android:id="@+id/email"
         style="@style/edit_text"
         android:layout_marginHorizontal="15dp"
@@ -69,7 +58,7 @@
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/login" />
+        app:layout_constraintTop_toBottomOf="@id/username" />
 
     <EditText
         android:id="@+id/password"

@@ -19,7 +19,7 @@ class SignInActivity : AppCompatActivity() {
         initFirebase()
 
         //Find view by id
-        val mail = findViewById<EditText>(R.id.login)
+        val mail = findViewById<EditText>(R.id.email)
         val password = findViewById<EditText>(R.id.password)
         val btnLogIn = findViewById<Button>(R.id.sign_in)
         val registration = findViewById<LinearLayout>(R.id.registration)

@@ -19,7 +19,6 @@
 
     <!--sign in activity-->
     <string name="title">STENOGRAFFIA INTERNATIONAL STREET ART FESTIVAL</string>
-    <string name="hint_login">Логин</string>
     <string name="hint_password">Пароль</string>
     <string name="sign_in">Войти</string>
     <string name="do_not_have_acc">Еще нет аккаунта?</string>
