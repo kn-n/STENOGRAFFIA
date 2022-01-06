@@ -1,5 +1,7 @@
 package com.example.stenograffia
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -10,6 +12,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
@@ -17,20 +21,28 @@ import com.example.stenograffia.ui.data.Models.User
 import com.example.stenograffia.ui.data.firebase.AUTH
 import com.example.stenograffia.ui.data.firebase.addNewUser
 import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.github.dhaval2404.imagepicker.ImagePicker
 import de.hdodenhof.circleimageview.CircleImageView
 
 class RegistrationActivity : AppCompatActivity() {
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
 
-    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
-        if (result.isSuccessful) {
-            // use the returned uri
-            val uriContent = result.uriContent
-            val uriFilePath = result.getUriFilePath(this) // optional usage
-        } else {
-            // an error occurred
-            val exception = result.error
+            if (resultCode == Activity.RESULT_OK) {
+                //Image Uri will not be null for RESULT_OK
+                val fileUri = data?.data!!
+                val img = findViewById<CircleImageView>(R.id.img)
+                val mProfileUri = fileUri
+                img.setImageURI(fileUri)
+            } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            }
         }
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,24 +57,35 @@ class RegistrationActivity : AppCompatActivity() {
         val signIn = findViewById<LinearLayout>(R.id.sign_in)
 
         img.setOnClickListener {
-            startCrop()
+            ImagePicker.with(this)
+                .compress(1024)         //Final image size will be less than 1 MB(Optional)
+                .maxResultSize(1080, 1080)  //Final image resolution will be less than 1080 x 1080(Optional)
+                .createIntent { intent ->
+                    startForProfileImageResult.launch(intent)
+                }
         }
 
         btnRegistration.setOnClickListener {
             if (username.text.isNotEmpty()
                 && email.text.isNotEmpty()
-                && password.text.isNotEmpty()){
+                && password.text.isNotEmpty()
+            ) {
                 AUTH.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful){
+                        if (task.isSuccessful) {
                             Log.d("UP/IN/OUT", "createUserWithEmail:success")
-                            val user = User(AUTH.currentUser!!.uid, username.text.toString(), "", "")
+                            val user =
+                                User(AUTH.currentUser!!.uid, username.text.toString(), "", "")
                             addNewUser(user)
                             val intent = Intent(this, MenuActivity::class.java)
                             startActivity(intent)
                         } else {
                             Log.d("UP/IN/OUT", "createUserWithEmail:failure", task.exception)
-                            Toast.makeText(baseContext, "Ой! Что-то пошло не так(", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                baseContext,
+                                "Ой! Что-то пошло не так(",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
             } else {
@@ -74,14 +97,5 @@ class RegistrationActivity : AppCompatActivity() {
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
         }
-    }
-
-    private fun startCrop() {
-        // start picker to get image for cropping and then use the image in cropping activity
-        cropImage.launch(
-            options {
-                setGuidelines(CropImageView.Guidelines.ON)
-            }
-        )
     }
 }
