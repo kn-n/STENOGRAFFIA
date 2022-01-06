@@ -19,29 +19,15 @@ import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import com.example.stenograffia.ui.data.Models.User
 import com.example.stenograffia.ui.data.firebase.AUTH
+import com.example.stenograffia.ui.data.firebase.REF_STORAGE_ROOT
 import com.example.stenograffia.ui.data.firebase.addNewUser
 import com.example.stenograffia.ui.data.firebase.initFirebase
 import com.github.dhaval2404.imagepicker.ImagePicker
 import de.hdodenhof.circleimageview.CircleImageView
 
 class RegistrationActivity : AppCompatActivity() {
-    private val startForProfileImageResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            val resultCode = result.resultCode
-            val data = result.data
-            if (resultCode == Activity.RESULT_OK) {
-                //Image Uri will not be null for RESULT_OK
-                val fileUri = data?.data!!
-                val img = findViewById<CircleImageView>(R.id.img)
-                val mProfileUri = fileUri
-                img.setImageURI(fileUri)
-            } else if (resultCode == ImagePicker.RESULT_ERROR) {
-                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
-            }
-        }
 
+    var mProfileUri: String = " "
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +40,6 @@ class RegistrationActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val btnRegistration = findViewById<Button>(R.id.registration)
         val signIn = findViewById<LinearLayout>(R.id.sign_in)
-
         img.setOnClickListener {
             ImagePicker
                 .with(this)
@@ -75,7 +60,7 @@ class RegistrationActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             Log.d("UP/IN/OUT", "createUserWithEmail:success")
                             val user =
-                                User(AUTH.currentUser!!.uid, username.text.toString(), "", "")
+                                User(AUTH.currentUser!!.uid, username.text.toString(), mProfileUri, "")
                             addNewUser(user)
                             val intent = Intent(this, MenuActivity::class.java)
                             startActivity(intent)
@@ -98,4 +83,21 @@ class RegistrationActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+            if (resultCode == Activity.RESULT_OK) {
+                //Image Uri will not be null for RESULT_OK
+                val fileUri = data?.data!!
+                val img = findViewById<CircleImageView>(R.id.img)
+                mProfileUri = fileUri.toString()
+                img.setImageURI(fileUri)
+            } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
 }
