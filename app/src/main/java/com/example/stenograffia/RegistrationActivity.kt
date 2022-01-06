@@ -34,6 +34,7 @@ class RegistrationActivity : AppCompatActivity() {
         img.setOnClickListener {
             CropImage.activity()
                 .start(this)
+                //123123123123
         }
 
         btnRegistration.setOnClickListener {
