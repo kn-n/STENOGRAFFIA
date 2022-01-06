@@ -29,7 +29,6 @@ class RegistrationActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val resultCode = result.resultCode
             val data = result.data
-
             if (resultCode == Activity.RESULT_OK) {
                 //Image Uri will not be null for RESULT_OK
                 val fileUri = data?.data!!
@@ -57,9 +56,10 @@ class RegistrationActivity : AppCompatActivity() {
         val signIn = findViewById<LinearLayout>(R.id.sign_in)
 
         img.setOnClickListener {
-            ImagePicker.with(this)
-                .compress(1024)         //Final image size will be less than 1 MB(Optional)
-                .maxResultSize(1080, 1080)  //Final image resolution will be less than 1080 x 1080(Optional)
+            ImagePicker
+                .with(this)
+                .cropSquare()
+                .galleryOnly()
                 .createIntent { intent ->
                     startForProfileImageResult.launch(intent)
                 }
