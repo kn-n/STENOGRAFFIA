@@ -21,10 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.net.toUri
 import com.example.stenograffia.ui.data.Models.User
-import com.example.stenograffia.ui.data.firebase.AUTH
-import com.example.stenograffia.ui.data.firebase.AppValueEventListener
-import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
-import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.example.stenograffia.ui.data.firebase.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -52,7 +49,7 @@ class MenuActivity : AppCompatActivity() {
         val userName = navView.getHeaderView(0).findViewById<TextView>(R.id.user_name)
 
         initFirebase()
-        REF_DATABASE_ROOT.child("Users").child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
+        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
             AppValueEventListener{
                 val userFromFirebase = it.getValue(User::class.java)
                 userImg.setImageURI(Uri.parse(userFromFirebase!!.imgUri))
