@@ -51,7 +51,7 @@ class MenuActivity : AppCompatActivity() {
         REF_DATABASE_ROOT.child("Users").child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
             AppValueEventListener{
                 val userFromFirebase = it.getValue(User::class.java)
-                userImg.setImageURI(userFromFirebase!!.imgUrl.toUri())
+                userImg.setImageURI(userFromFirebase!!.imgUri.toUri())
             }
         )
         appBarConfiguration = AppBarConfiguration(

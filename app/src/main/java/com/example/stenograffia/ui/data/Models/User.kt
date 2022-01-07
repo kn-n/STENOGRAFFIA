@@ -4,7 +4,7 @@ class User {
 
     var id: String = ""
     var name: String = ""
-    var imgUrl: String = ""
+    var imgUri: String = ""
     var boughtRoutes: String = ""
 
     constructor()
@@ -12,12 +12,12 @@ class User {
     constructor(
         id: String,
         name: String,
-        imgUrl: String,
+        imgUri: String,
         boughtRoutes: String
     ) {
         this.id = id
         this.name = name
-        this.imgUrl = imgUrl
+        this.imgUri = imgUri
         this.boughtRoutes = boughtRoutes
     }
 }
