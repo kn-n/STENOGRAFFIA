@@ -64,6 +64,7 @@
     <string name="hint_user_name">Имя</string>
     <string name="hint_email">Email</string>
     <string name="save">Сохранить</string>
+    <string name="hint_new_password">Введите новый пароль</string>
 
     <!--registration activity-->
     <string name="register1">Зарегистрироваться</string>
