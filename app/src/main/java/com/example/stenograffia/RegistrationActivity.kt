@@ -56,7 +56,7 @@ class RegistrationActivity : AppCompatActivity() {
                 AUTH.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            val user = User(AUTH.currentUser!!.uid, username.text.toString(), "", "")
+                            val user = User(AUTH.currentUser!!.uid, username.text.toString(), "", ArrayList())
                             addNewUser(user)
                             val path = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid)
                             path.putFile(mProfileUri.toUri()).addOnCompleteListener {

@@ -36,6 +36,6 @@ fun addNewUser(user: User) {
 
 fun buyRoute(user: User, routeId: String) {
     initFirebase()
-    REF_DATABASE_ROOT.child(NODE_USERS).child(user.id).child(user.boughtRoutes).child(routeId).setValue(routeId)
+//    REF_DATABASE_ROOT.child(NODE_USERS).child(user.id).child(user.boughtRoutes).child(routeId).setValue(routeId)
 }
 

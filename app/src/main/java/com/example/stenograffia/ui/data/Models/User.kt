@@ -5,7 +5,7 @@ class User {
     var id: String = ""
     var name: String = ""
     var imgUri: String = ""
-    var boughtRoutes: String = ""
+    var boughtRoutes: ArrayList<String> = ArrayList()
 
     constructor()
 
@@ -13,7 +13,7 @@ class User {
         id: String,
         name: String,
         imgUri: String,
-        boughtRoutes: String
+        boughtRoutes: ArrayList<String>
     ) {
         this.id = id
         this.name = name
