@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -45,13 +46,16 @@ class MenuActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
-        val userImg: CircleImageView = findViewById(R.id.user_img)
-//        userImg.setImageURI()
+//        val userImg: CircleImageView = findViewById(R.id.user_img_menu)
+        val userImg = navView.getHeaderView(0).findViewById<CircleImageView>(R.id.user_img_menu)
+        val userName = navView.getHeaderView(0).findViewById<TextView>(R.id.user_name)
+
         initFirebase()
         REF_DATABASE_ROOT.child("Users").child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
             AppValueEventListener{
                 val userFromFirebase = it.getValue(User::class.java)
                 userImg.setImageURI(userFromFirebase!!.imgUri.toUri())
+                userName.text = userFromFirebase.name
             }
         )
         appBarConfiguration = AppBarConfiguration(
