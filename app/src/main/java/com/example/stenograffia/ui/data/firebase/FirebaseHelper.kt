@@ -1,5 +1,6 @@
 package com.example.stenograffia.ui.data.firebase
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.example.stenograffia.ui.data.Models.User
@@ -27,6 +28,7 @@ fun addNewUser(user: User) {
     initFirebase()
     Log.d("UP/IN/OUT", "try add new user")
     REF_DATABASE_ROOT.child(NODE_USERS).child(user.id).setValue(user)
+    REF_STORAGE_ROOT.child(NODE_USERS).putFile(Uri.parse(user.imgUri))
 }
 
 fun buyRoute(user: User, routeId: String) {

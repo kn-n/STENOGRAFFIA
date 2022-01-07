@@ -2,6 +2,7 @@ package com.example.stenograffia
 
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -54,7 +55,7 @@ class MenuActivity : AppCompatActivity() {
         REF_DATABASE_ROOT.child("Users").child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
             AppValueEventListener{
                 val userFromFirebase = it.getValue(User::class.java)
-                userImg.setImageURI(userFromFirebase!!.imgUri.toUri())
+                userImg.setImageURI(Uri.parse(userFromFirebase!!.imgUri))
                 userName.text = userFromFirebase.name
             }
         )
