@@ -38,17 +38,17 @@ class ProfileFragment : Fragment() {
         profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
 
-        profileViewModel.text.observe(viewLifecycleOwner, Observer {
+        profileViewModel.userName.observe(viewLifecycleOwner, Observer {
+            userName.text = it
         })
 
-        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
-            AppValueEventListener{
-                val user = it.getValue(User::class.java)
-                userName.text = user!!.name
-                userEmail.text = AUTH.currentUser!!.email
-                imgProfile.downloadAndSetImage(user.imgUri)
-            }
-        )
+        profileViewModel.userEmail.observe(viewLifecycleOwner, Observer {
+            userEmail.text = it
+        })
+
+        profileViewModel.userImg.observe(viewLifecycleOwner, Observer {
+            imgProfile.downloadAndSetImage(it)
+        })
 
         btnEdit.setOnClickListener { view ->
             view.findNavController().navigate(R.id.editAccFragment)
