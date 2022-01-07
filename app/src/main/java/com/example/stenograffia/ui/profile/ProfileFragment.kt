@@ -11,6 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.stenograffia.R
+import com.example.stenograffia.downloadAndSetImage
+import com.example.stenograffia.ui.data.Models.User
+import com.example.stenograffia.ui.data.firebase.*
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ProfileFragment : Fragment() {
@@ -24,6 +27,7 @@ class ProfileFragment : Fragment() {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_profile, container, false)
+        initFirebase()
 
         //Find view by id
         val imgProfile = root.findViewById<CircleImageView>(R.id.user_img)
@@ -36,6 +40,15 @@ class ProfileFragment : Fragment() {
 
         profileViewModel.text.observe(viewLifecycleOwner, Observer {
         })
+
+        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
+            AppValueEventListener{
+                val user = it.getValue(User::class.java)
+                userName.text = user!!.name
+                userEmail.text = AUTH.currentUser!!.email
+                imgProfile.downloadAndSetImage(user.imgUri)
+            }
+        )
 
         btnEdit.setOnClickListener { view ->
             view.findNavController().navigate(R.id.editAccFragment)
