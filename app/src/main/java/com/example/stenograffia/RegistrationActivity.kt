@@ -27,7 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class RegistrationActivity : AppCompatActivity() {
 
-    var mProfileUri: String = " "
+    var mProfileUri: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
