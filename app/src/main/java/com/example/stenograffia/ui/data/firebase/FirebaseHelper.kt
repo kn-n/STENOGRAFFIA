@@ -30,8 +30,8 @@ fun addNewUser(user: User) {
     initFirebase()
     Log.d("UP/IN/OUT", "try add new user")
     REF_DATABASE_ROOT.child(NODE_USERS).child(user.id).setValue(user)
-    val uri = user.imgUri.toUri()
-    REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(user.id).putFile(uri)
+//    val uri = user.imgUri.toUri()
+//    REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(user.id).putFile(uri)
 }
 
 fun buyRoute(user: User, routeId: String) {

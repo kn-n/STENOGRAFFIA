@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndrStudio/STENOGRAFFIA/app/src/main/res/drawable/bg_btn.xml" value="0.3828125" />
+        <entry key="..\:/AndrStudio/STENOGRAFFIA/app/src/main/res/drawable/ic_profile.xml" value="0.3828125" />
         <entry key="..\:/AndrStudio/STENOGRAFFIA/app/src/main/res/drawable/selector_btn_what_block.xml" value="0.3828125" />
         <entry key="..\:/AndrStudio/STENOGRAFFIA/app/src/main/res/drawable/side_nav_bar.xml" value="0.3828125" />
         <entry key="..\:/AndrStudio/STENOGRAFFIA/app/src/main/res/layout/activity_menu.xml" value="0.36666666666666664" />
@@ -21,7 +22,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" default="true" project-jdk-name="12" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

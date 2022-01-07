@@ -2,6 +2,7 @@ package com.example.stenograffia
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.navigation.NavigationView
@@ -13,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.net.toUri
 import com.example.stenograffia.ui.data.Models.User
 import com.example.stenograffia.ui.data.firebase.*
 import de.hdodenhof.circleimageview.CircleImageView
@@ -40,14 +42,8 @@ class MenuActivity : AppCompatActivity() {
                 AppValueEventListener {
                     val userFromFirebase = it.getValue(User::class.java)
                     userName.text = userFromFirebase!!.name
-                    REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE)
-                        .child(userFromFirebase.id).downloadUrl.addOnCompleteListener { result ->
-                            if (result.isSuccessful) {
-                                userImg.downloadAndSetImage(result.result.toString())
-                            } else {
-                                userImg.downloadAndSetImage("")
-                            }
-                        }
+                    Log.d("UP/IN/OUT", "uri:" + userFromFirebase.imgUri)
+                    userImg.downloadAndSetImage(userFromFirebase.imgUri)
                 }
             )
         appBarConfiguration = AppBarConfiguration(

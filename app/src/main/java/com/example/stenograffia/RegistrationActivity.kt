@@ -14,14 +14,12 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import com.example.stenograffia.ui.data.Models.User
-import com.example.stenograffia.ui.data.firebase.AUTH
-import com.example.stenograffia.ui.data.firebase.REF_STORAGE_ROOT
-import com.example.stenograffia.ui.data.firebase.addNewUser
-import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.example.stenograffia.ui.data.firebase.*
 import com.github.dhaval2404.imagepicker.ImagePicker
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -58,12 +56,26 @@ class RegistrationActivity : AppCompatActivity() {
                 AUTH.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            Log.d("UP/IN/OUT", "createUserWithEmail:success")
-                            val user =
-                                User(AUTH.currentUser!!.uid, username.text.toString(), mProfileUri, "")
+                            val user = User(AUTH.currentUser!!.uid, username.text.toString(), "", "")
                             addNewUser(user)
-                            val intent = Intent(this, MenuActivity::class.java)
-                            startActivity(intent)
+                            val path = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid)
+                            path.putFile(mProfileUri.toUri()).addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    path.downloadUrl.addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            val urlFromStorage = it.result.toString()
+                                            REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("imgUri").setValue(urlFromStorage)
+                                            val intent = Intent(this, MenuActivity::class.java)
+                                            startActivity(intent)
+                                        }
+                                    }
+                                } else {
+                                    val intent = Intent(this, MenuActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
+                            Log.d("UP/IN/OUT", "createUserWithEmail:success")
+
                         } else {
                             Log.d("UP/IN/OUT", "createUserWithEmail:failure", task.exception)
                             Toast.makeText(
