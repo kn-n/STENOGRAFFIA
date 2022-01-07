@@ -1,7 +1,12 @@
 package com.example.stenograffia
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -12,6 +17,20 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.net.toUri
+import com.example.stenograffia.ui.data.Models.User
+import com.example.stenograffia.ui.data.firebase.AUTH
+import com.example.stenograffia.ui.data.firebase.AppValueEventListener
+import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
+import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import de.hdodenhof.circleimageview.CircleImageView
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class MenuActivity : AppCompatActivity() {
 
@@ -26,8 +45,15 @@ class MenuActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        val userImg: CircleImageView = findViewById(R.id.user_img)
+//        userImg.setImageURI()
+        initFirebase()
+        REF_DATABASE_ROOT.child("Users").child(AUTH.currentUser!!.uid).addListenerForSingleValueEvent(
+            AppValueEventListener{
+                val userFromFirebase = it.getValue(User::class.java)
+                userImg.setImageURI(userFromFirebase!!.imgUrl.toUri())
+            }
+        )
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_profile, R.id.nav_map, R.id.nav_routes,
