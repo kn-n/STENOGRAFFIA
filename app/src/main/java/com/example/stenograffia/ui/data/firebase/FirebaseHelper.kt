@@ -19,6 +19,8 @@ lateinit var REF_STORAGE_ROOT: StorageReference
 const val NODE_USERS = "Users"
 const val NODE_ROUTES = "Routes"
 const val FOLDER_PROFILE_IMAGE = "ProfileImage"
+const val NODE_SURFACE_EXCHANGE = "SurfaceExchange"
+const val FOLDER_SURFACE_EXCHANGE = "SurfaceExchangePhotos"
 
 fun initFirebase() {
     AUTH = FirebaseAuth.getInstance()
