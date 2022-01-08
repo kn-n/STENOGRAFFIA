@@ -55,12 +55,23 @@ class BoughtRouteFragment:Fragment(), GoogleMap.OnMarkerClickListener {
             )
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 11.5f))
             googleMap.setOnMarkerClickListener(this)
-            val flowerPortal = LatLng(56.829890, 60.600504)
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(flowerPortal)
-                    .title("Цветочный портал")
-            )
+
+            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer {
+                val points = it
+                for (point in points){
+                    val marker = LatLng(56.829890, 60.600504)
+                    googleMap.addMarker(
+                        MarkerOptions()
+                            .position(marker)
+                    )
+                }
+            })
+//            val flowerPortal = LatLng(56.829890, 60.600504)
+//            googleMap.addMarker(
+//                MarkerOptions()
+//                    .position(flowerPortal)
+//                    .title("Цветочный портал")
+//            )
         })
 
 
