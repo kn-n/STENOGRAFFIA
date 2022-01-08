@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_nav_routes_to_routeFragment"
             app:destination="@id/routeFragment" />
+        <action
+            android:id="@+id/action_nav_routes_to_boughtRouteFragment"
+            app:destination="@id/boughtRouteFragment" />
     </fragment>
 
     <fragment
@@ -58,4 +61,19 @@
             android:id="@+id/action_editAccFragment_to_nav_profile"
             app:destination="@id/nav_profile" />
     </fragment>
+
+    <fragment
+        android:id="@+id/boughtRouteFragment"
+        android:name="com.example.stenograffia.ui.boughtRoute.BoughtRouteFragment"
+        android:label="@string/fragment_route_one"
+        tools:layout="@layout/fragment_route_map">
+        <action
+            android:id="@+id/action_boughtRouteFragment_to_routeGuideFragment"
+            app:destination="@id/routeGuideFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/routeGuideFragment"
+        android:name="com.example.stenograffia.ui.routeGuide.RouteGuideFragment"
+        tools:layout="@layout/fragment_route_guide" />
 </navigation>

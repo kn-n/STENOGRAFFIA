@@ -27,9 +27,16 @@ class RoutesAdapter(private val routes: ArrayList<SimpleRoute?>, private val fro
         holder.routeLength.text = route.Length
         val bundle = Bundle()
         bundle.putString("routeId", route.Id)
-        holder.route.setOnClickListener { view ->
-            view.findNavController().navigate(R.id.routeFragment, bundle)
+        if (fromAllRoutes){
+            holder.route.setOnClickListener { view ->
+                view.findNavController().navigate(R.id.routeFragment, bundle)
+            }
+        }else{
+            holder.route.setOnClickListener { view ->
+                view.findNavController().navigate(R.id.boughtRouteFragment, bundle)
+            }
         }
+
     }
 
     override fun getItemCount() = routes.size
