@@ -48,7 +48,7 @@ class RoutesFragment : Fragment() {
 
         routesViewModel.allRoutes.observe(viewLifecycleOwner, Observer {
             routes = it
-            routesRecyclerView.adapter = RoutesAdapter(routes)
+            routesRecyclerView.adapter = RoutesAdapter(routes, true)
         })
 
         myRoutes.setOnClickListener {
@@ -56,7 +56,7 @@ class RoutesFragment : Fragment() {
 
             routesViewModel.userRoutes.observe(viewLifecycleOwner, Observer {
                 routes = it
-                routesRecyclerView.adapter = RoutesAdapter(routes)
+                routesRecyclerView.adapter = RoutesAdapter(routes, false)
             })
         }
 
@@ -65,7 +65,7 @@ class RoutesFragment : Fragment() {
 
             routesViewModel.allRoutes.observe(viewLifecycleOwner, Observer {
                 routes = it
-                routesRecyclerView.adapter = RoutesAdapter(routes)
+                routesRecyclerView.adapter = RoutesAdapter(routes,true)
             })
         }
 
