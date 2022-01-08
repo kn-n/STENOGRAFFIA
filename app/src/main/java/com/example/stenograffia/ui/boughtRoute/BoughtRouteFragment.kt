@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.stenograffia.R
 import com.example.stenograffia.ui.data.Models.Point
-import com.example.stenograffia.ui.route.ModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -27,6 +25,7 @@ class BoughtRouteFragment:Fragment(), GoogleMap.OnMarkerClickListener {
     private lateinit var boughtRouteViewModel: BoughtRouteViewModel
     lateinit var map: SupportMapFragment
     lateinit var googleMap: GoogleMap
+    private var idRoute: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,10 +36,11 @@ class BoughtRouteFragment:Fragment(), GoogleMap.OnMarkerClickListener {
 
         val routeId = requireArguments().getString("routeId")
 
+        idRoute = routeId!!
         //Find view by id
         map = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
-        boughtRouteViewModel = ViewModelProvider(this,  ModelFactory(routeId!!)).get(BoughtRouteViewModel::class.java)
+        boughtRouteViewModel = ViewModelProvider(this,  BoughtRouteModelFactory(routeId)).get(BoughtRouteViewModel::class.java)
 
 //        boughtRouteViewModel.text.observe(viewLifecycleOwner, Observer {
 //
@@ -70,17 +70,20 @@ class BoughtRouteFragment:Fragment(), GoogleMap.OnMarkerClickListener {
 
     override fun onMarkerClick(marker: Marker): Boolean {
         boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer {
+            val bundle = Bundle()
             val points = it
             val markerPoint = Point(marker.position.latitude.toString(), marker.position.longitude.toString())
-            val i = 0
+            var i = 0
             while (i<points.size){
-                if (points[i] == markerPoint){
-                    val bundle = Bundle()
-                    bundle.getString("placeId", (i+1).toString())
-                    view?.findNavController()?.navigate(R.id.routeGuideFragment)
+                if (points[i]!!.latitude == markerPoint.latitude && points[i]!!.longitude == markerPoint.longitude){
+                    bundle.putString("routeId", idRoute)
+                    bundle.putString("placeId", (i+1).toString())
+                    break
+                } else {
+                    i+=1
                 }
             }
-
+            view?.findNavController()?.navigate(R.id.routeGuideFragment, bundle)
         })
         return false
     }

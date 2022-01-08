@@ -32,7 +32,6 @@ class RouteFragment : Fragment() {
 
         //Find view by id
         val description: TextView = root.findViewById(R.id.inf_object)
-        val price: TextView = root.findViewById(R.id.price)
         val btnBuy : Button = root.findViewById(R.id.btn_buy)
         val imageSlider: SliderView = root.findViewById(R.id.imageSlider)
 
@@ -41,7 +40,6 @@ class RouteFragment : Fragment() {
 
         routeViewModel.allRoutes.observe(viewLifecycleOwner, Observer { route ->
             description.text = route.Description
-            price.text = route.Price
             btnBuy.setOnClickListener {
                 initFirebase()
                 buyRoute(AUTH.currentUser!!.uid, route.Id)

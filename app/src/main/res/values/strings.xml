@@ -57,8 +57,7 @@
     <string name="log_out">Выйти</string>
 
     <!--route fragment-->
-    <string name="price">Цена:</string>
-    <string name="buy">Купить</string>
+    <string name="buy">Добавить в мои маршруты</string>
 
     <!--edit acc fragment-->
     <string name="hint_user_name">Имя</string>
