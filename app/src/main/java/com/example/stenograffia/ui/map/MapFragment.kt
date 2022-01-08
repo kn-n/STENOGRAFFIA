@@ -12,6 +12,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLngBounds
 
 class MapFragment : Fragment(){
 
@@ -35,6 +36,11 @@ class MapFragment : Fragment(){
         map.onCreate(savedInstanceState)
         map.getMapAsync(OnMapReadyCallback {
             googleMap = it
+            val ekbBounds = LatLngBounds(
+                LatLng((56.821496), 	60.578646),// SW bounds
+                LatLng((56.892695), 60.652224)// NE bounds
+            )
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 11.5f))
         })
 
         return root
