@@ -9,7 +9,7 @@ import com.google.firebase.database.ktx.getValue
 
 class RoutesViewModel : ViewModel() {
 
-    private val _simpleRoutes = MutableLiveData<ArrayList<SimpleRoute?>>().apply {
+    private val _allRoutes = MutableLiveData<ArrayList<SimpleRoute?>>().apply {
         initFirebase()
         REF_DATABASE_ROOT.child(NODE_ROUTES).addListenerForSingleValueEvent(
             AppValueEventListener{ result ->
@@ -18,13 +18,28 @@ class RoutesViewModel : ViewModel() {
             }
         )
     }
-    val simpleRoutes: LiveData<ArrayList<SimpleRoute?>> = _simpleRoutes
+    val allRoutes: LiveData<ArrayList<SimpleRoute?>> = _allRoutes
 
     private val _userRoutes = MutableLiveData<ArrayList<SimpleRoute?>>().apply {
         initFirebase()
-        REF_DATABASE_ROOT.child(NODE_USERS).child("boughtRoutes").addListenerForSingleValueEvent(
-            AppValueEventListener{
-//                val routesId = it.getValue(ArrayList<String>)
+        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("boughtRoutes").addListenerForSingleValueEvent(
+            AppValueEventListener{ array ->
+                val arrayIds = array.children.map { it.getValue(String ::class.java) }
+                val routesIds = ArrayList(arrayIds)
+                if (routesIds.isNullOrEmpty()){
+                    value = ArrayList()
+                }else{
+                    REF_DATABASE_ROOT.child(NODE_ROUTES).addListenerForSingleValueEvent(
+                        AppValueEventListener{ result ->
+                            val allRoutes = result.children.map { it.getValue(SimpleRoute::class.java) }
+                            val resultRoutes:ArrayList<SimpleRoute?> = ArrayList()
+                            for (id in routesIds){
+                                resultRoutes.add(allRoutes[id!!.toInt()-1])
+                            }
+                            value = resultRoutes
+                        }
+                    )
+                }
             }
         )
     }

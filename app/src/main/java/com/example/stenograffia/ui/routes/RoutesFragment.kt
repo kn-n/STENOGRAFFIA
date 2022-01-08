@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stenograffia.R
 import com.example.stenograffia.ui.data.Models.SimpleRoute
+import com.example.stenograffia.ui.data.firebase.AUTH
+import com.example.stenograffia.ui.data.firebase.NODE_USERS
+import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
+import com.example.stenograffia.ui.data.firebase.initFirebase
 
 class RoutesFragment : Fragment() {
 
@@ -35,25 +39,53 @@ class RoutesFragment : Fragment() {
         val routesRecyclerView: RecyclerView = root.findViewById(R.id.routes_recycler_view)
         routesRecyclerView.layoutManager = LinearLayoutManager(context)
 
+        selectAllRoutes(allRoutes, myRoutes)
+
         var routes: ArrayList<SimpleRoute?>
 
         routesViewModel =
             ViewModelProvider(this).get(RoutesViewModel::class.java)
 
-        routesViewModel.simpleRoutes.observe(viewLifecycleOwner, Observer {
+        routesViewModel.allRoutes.observe(viewLifecycleOwner, Observer {
             routes = it
             routesRecyclerView.adapter = RoutesAdapter(routes)
         })
 
         myRoutes.setOnClickListener {
-            myRoutes.setTextAppearance(R.style.selected_file_routes)
+            selectMyRoutes(allRoutes, myRoutes)
 
+            routesViewModel.userRoutes.observe(viewLifecycleOwner, Observer {
+                routes = it
+                routesRecyclerView.adapter = RoutesAdapter(routes)
+            })
         }
 
+        allRoutes.setOnClickListener {
+            selectAllRoutes(allRoutes, myRoutes)
+
+            routesViewModel.allRoutes.observe(viewLifecycleOwner, Observer {
+                routes = it
+                routesRecyclerView.adapter = RoutesAdapter(routes)
+            })
+        }
 
 //        routeOne.setOnClickListener { view ->
 //            view.findNavController().navigate(R.id.routeFragment)
 //        }
         return root
+    }
+
+    fun selectAllRoutes(allRoutes: TextView, myRoutes: TextView){
+        allRoutes.setTextAppearance(R.style.selected_file_routes)
+        allRoutes.setBackgroundResource(R.drawable.underlined)
+        myRoutes.setTextAppearance(R.style.unselected_file_routes)
+        myRoutes.setBackgroundResource(R.drawable.not_underlined)
+    }
+
+    fun selectMyRoutes(allRoutes: TextView, myRoutes: TextView){
+        myRoutes.setTextAppearance(R.style.selected_file_routes)
+        myRoutes.setBackgroundResource(R.drawable.underlined)
+        allRoutes.setTextAppearance(R.style.unselected_file_routes)
+        allRoutes.setBackgroundResource(R.drawable.not_underlined)
     }
 }
