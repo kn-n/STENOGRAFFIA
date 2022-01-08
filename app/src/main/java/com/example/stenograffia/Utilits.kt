@@ -22,3 +22,20 @@ fun CircleImageView.downloadAndSetImage(url: String) {
             .into(this)
     }
 }
+
+fun ImageView.downloadAndSetImage(url: String) {
+    if (url == "") {
+        val path = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE)
+            .child("user.png")
+        path.downloadUrl.addOnCompleteListener {
+            val photoUrl = it.result.toString()
+            Picasso.get()
+                .load(photoUrl)
+                .into(this)
+        }
+    } else {
+        Picasso.get()
+            .load(url)
+            .into(this)
+    }
+}

@@ -14,6 +14,7 @@ import com.example.stenograffia.R
 import com.example.stenograffia.ui.data.firebase.AUTH
 import com.example.stenograffia.ui.data.firebase.buyRoute
 import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.smarteist.autoimageslider.SliderView
 
 class RouteFragment : Fragment() {
 
@@ -33,6 +34,7 @@ class RouteFragment : Fragment() {
         val description: TextView = root.findViewById(R.id.inf_object)
         val price: TextView = root.findViewById(R.id.price)
         val btnBuy : Button = root.findViewById(R.id.btn_buy)
+        val imageSlider: SliderView = root.findViewById(R.id.imageSlider)
 
         routeViewModel =
             ViewModelProvider(this, ModelFactory(routeId!!)).get(RouteViewModel::class.java)
@@ -51,6 +53,11 @@ class RouteFragment : Fragment() {
             if (it) btnBuy.visibility = View.GONE
             else btnBuy.visibility = View.VISIBLE
         })
+
+        routeViewModel.promoImages.observe(viewLifecycleOwner, Observer {
+            imageSlider.setSliderAdapter(SliderImageAdapter(it))
+        })
+        imageSlider.isAutoCycle = false
 
         return root
     }

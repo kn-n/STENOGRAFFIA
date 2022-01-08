@@ -69,20 +69,17 @@ class RoutesFragment : Fragment() {
             })
         }
 
-//        routeOne.setOnClickListener { view ->
-//            view.findNavController().navigate(R.id.routeFragment)
-//        }
         return root
     }
 
-    fun selectAllRoutes(allRoutes: TextView, myRoutes: TextView){
+    private fun selectAllRoutes(allRoutes: TextView, myRoutes: TextView){
         allRoutes.setTextAppearance(R.style.selected_file_routes)
         allRoutes.setBackgroundResource(R.drawable.underlined)
         myRoutes.setTextAppearance(R.style.unselected_file_routes)
         myRoutes.setBackgroundResource(R.drawable.not_underlined)
     }
 
-    fun selectMyRoutes(allRoutes: TextView, myRoutes: TextView){
+    private fun selectMyRoutes(allRoutes: TextView, myRoutes: TextView){
         myRoutes.setTextAppearance(R.style.selected_file_routes)
         myRoutes.setBackgroundResource(R.drawable.underlined)
         allRoutes.setTextAppearance(R.style.unselected_file_routes)
