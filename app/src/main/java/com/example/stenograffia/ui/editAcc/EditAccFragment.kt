@@ -65,7 +65,6 @@ class EditAccFragment : Fragment() {
         }
 
         btnSave.setOnClickListener { view ->
-            pathForImg.putFile(mProfileUri.toUri())
             if (password.text.isNotEmpty()) {
                 AUTH.currentUser!!.updatePassword(password.text.toString())
             }
@@ -74,15 +73,14 @@ class EditAccFragment : Fragment() {
             }
             REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("name")
                 .setValue(username.text.toString())
-            pathForImg.putFile(mProfileUri.toUri())
             pathForImg.downloadUrl.addOnCompleteListener {
                 if (it.isSuccessful) {
                     val urlFromStorage = it.result.toString()
                     REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid)
                         .child("imgUri").setValue(urlFromStorage)
+                    view.findNavController().navigate(R.id.nav_profile)
                 }
             }
-            view.findNavController().navigate(R.id.nav_profile)
         }
 
         return root
@@ -97,6 +95,7 @@ class EditAccFragment : Fragment() {
                 val fileUri = data?.data!!
                 val img = requireView().findViewById<CircleImageView>(R.id.img)
                 mProfileUri = fileUri.toString()
+                REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid).putFile(mProfileUri.toUri())
                 img.setImageURI(fileUri)
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
                 Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.stenograffia.downloadAndSetImage
 import com.example.stenograffia.ui.data.Models.User
 import com.example.stenograffia.ui.data.firebase.*
+import kotlinx.coroutines.currentCoroutineContext
 
 class ProfileViewModel : ViewModel() {
 
@@ -28,11 +29,16 @@ class ProfileViewModel : ViewModel() {
 
     private val _userImg = MutableLiveData<String>().apply {
         initFirebase()
-        REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid).downloadUrl.addOnCompleteListener {
-            if (it.isSuccessful){
-                value = it.result.toString()
-            }
-        }
+//        REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid).downloadUrl.addOnCompleteListener {
+//            if (it.isSuccessful){
+//                value = it.result.toString()
+//            }
+//        }
+        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("imgUri").addValueEventListener(
+            AppValueEventListener{
+                val imgUri = it.getValue(String::class.java)
+                value = imgUri
+            })
     }
     val userImg: LiveData<String> = _userImg
 }
