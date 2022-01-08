@@ -34,8 +34,23 @@ fun addNewUser(user: User) {
 //    REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(user.id).putFile(uri)
 }
 
-fun buyRoute(user: User, routeId: String) {
+fun buyRoute(id: String, routeId: String) {
     initFirebase()
-//    REF_DATABASE_ROOT.child(NODE_USERS).child(user.id).child(user.boughtRoutes).child(routeId).setValue(routeId)
+    REF_DATABASE_ROOT.child(NODE_USERS).child(id).child("boughtRoutes").addListenerForSingleValueEvent(
+        AppValueEventListener{array ->
+            val routesIds = array.children.map { it.getValue(String ::class.java) }
+            if (routesIds.isNullOrEmpty()){
+                val rIds = arrayListOf(routeId)
+                REF_DATABASE_ROOT.child(NODE_USERS).child(id).child("boughtRoutes").setValue(rIds)
+            } else {
+                val rIds : MutableList<String> = ArrayList()
+                for (id in routesIds){
+                    rIds.add(id!!)
+                }
+                rIds.add(routeId)
+                REF_DATABASE_ROOT.child(NODE_USERS).child(id).child("boughtRoutes").setValue(rIds)
+            }
+        }
+    )
 }
 

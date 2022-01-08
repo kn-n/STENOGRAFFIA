@@ -11,6 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.stenograffia.R
+import com.example.stenograffia.ui.data.firebase.AUTH
+import com.example.stenograffia.ui.data.firebase.buyRoute
+import com.example.stenograffia.ui.data.firebase.initFirebase
 
 class RouteFragment : Fragment() {
 
@@ -34,9 +37,19 @@ class RouteFragment : Fragment() {
         routeViewModel =
             ViewModelProvider(this, ModelFactory(routeId!!)).get(RouteViewModel::class.java)
 
-        routeViewModel.allRoutes.observe(viewLifecycleOwner, Observer {
-            description.text = it.Description
-            price.text = it.Price
+        routeViewModel.allRoutes.observe(viewLifecycleOwner, Observer { route ->
+            description.text = route.Description
+            price.text = route.Price
+            btnBuy.setOnClickListener {
+                initFirebase()
+                buyRoute(AUTH.currentUser!!.uid, route.Id)
+                btnBuy.visibility = View.GONE
+            }
+        })
+
+        routeViewModel.statusOfRoute.observe(viewLifecycleOwner, Observer {
+            if (it) btnBuy.visibility = View.GONE
+            else btnBuy.visibility = View.VISIBLE
         })
 
         return root
