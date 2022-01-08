@@ -13,6 +13,7 @@ import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment(){
 
@@ -41,6 +42,13 @@ class MapFragment : Fragment(){
                 LatLng((56.892695), 60.652224)// NE bounds
             )
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 11.5f))
+
+            val flowerPortal = LatLng(56.829890, 60.600504)
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(flowerPortal)
+                    .title("Цветочный портал")
+            )
         })
 
         return root
