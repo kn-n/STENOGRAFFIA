@@ -26,15 +26,25 @@
         app:sliderStartAutoCycle="true" />
 
     <TextView
+        android:id="@+id/name"
+        style="@style/place_name_text"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="15dp"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageSlider"/>
+
+    <TextView
         android:id="@+id/inf_object"
         style="@style/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageSlider"/>
+        app:layout_constraintTop_toBottomOf="@id/name"/>
 
     <ImageView
         android:layout_width="match_parent"

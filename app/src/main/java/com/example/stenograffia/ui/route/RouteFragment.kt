@@ -31,6 +31,7 @@ class RouteFragment : Fragment() {
         val routeId = requireArguments().getString("routeId")
 
         //Find view by id
+        val name : TextView = root.findViewById(R.id.name)
         val description: TextView = root.findViewById(R.id.inf_object)
         val btnBuy : Button = root.findViewById(R.id.btn_buy)
         val imageSlider: SliderView = root.findViewById(R.id.imageSlider)
@@ -39,6 +40,7 @@ class RouteFragment : Fragment() {
             ViewModelProvider(this, ModelFactory(routeId!!)).get(RouteViewModel::class.java)
 
         routeViewModel.allRoutes.observe(viewLifecycleOwner, Observer { route ->
+            name.text = route.Name
             description.text = route.Description
             btnBuy.setOnClickListener {
                 initFirebase()
