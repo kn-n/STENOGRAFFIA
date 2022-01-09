@@ -1,6 +1,7 @@
 package com.example.stenograffia.ui.routeGuide
 
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,7 +49,7 @@ class RouteGuideFragment : Fragment() {
             image.downloadAndSetImage(it.Img_url)
             name.text = it.Name
             description.text = it.Description
-            mediaPlayer = MediaPlayer.create(context, it.Audio.toUri())
+            mediaPlayer = MediaPlayer.create(context, Uri.parse(it.Audio))
             seekBar.max = mediaPlayer.duration
             seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {

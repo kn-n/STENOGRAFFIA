@@ -9,6 +9,9 @@ import androidx.fragment.app.findFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.stenograffia.R
+import com.example.stenograffia.ui.data.firebase.NODE_ROUTES
+import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
+import com.example.stenograffia.ui.data.firebase.initFirebase
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -58,7 +61,4 @@ class MapFragment : Fragment(){
 
         return root
     }
-
-
-
 }

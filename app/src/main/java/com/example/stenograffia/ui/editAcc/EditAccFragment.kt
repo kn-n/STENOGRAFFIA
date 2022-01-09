@@ -2,6 +2,7 @@ package com.example.stenograffia.ui.editAcc
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -72,7 +73,7 @@ class EditAccFragment : Fragment() {
                 AUTH.currentUser!!.updateEmail(email.text.toString()).addOnCompleteListener {
                     if (it.isSuccessful) {
                         REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid)
-                            .putFile(mProfileUri.toUri()).addOnCompleteListener {
+                            .putFile(Uri.parse(mProfileUri)).addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     pathForImg.downloadUrl.addOnCompleteListener {
                                         if (it.isSuccessful) {
