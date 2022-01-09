@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -147,11 +148,12 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 override fun onSuccess(t: Result) {
                     polyLineList = ArrayList()
                     val routeList: List<RouteForRetrofit> = t.getRoutes()
+                    Toast.makeText(context,t.toString(),Toast.LENGTH_LONG).show()
                     for (route: RouteForRetrofit in routeList) {
                         val polyLine: String = route.getOverviewPolyline().getPoints()
                         (polyLineList as ArrayList<LatLng>).addAll(decodePolyline(polyLine))
                     }
-                    Log.d("PLEASE",polyLineList[0].toString())
+//                    Log.d("PLEASE",polyLineList[0].toString())
                     polylineOptions = PolylineOptions()
                     polylineOptions.color(Color.BLUE)
                     polylineOptions.width(8F)
