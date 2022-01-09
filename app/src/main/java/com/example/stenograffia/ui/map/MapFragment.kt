@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.findFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.stenograffia.R
 import com.google.android.gms.maps.*
@@ -43,12 +44,16 @@ class MapFragment : Fragment(){
             )
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 11.5f))
 
-            val flowerPortal = LatLng(56.829890, 60.600504)
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(flowerPortal)
-                    .title("Цветочный портал")
-            )
+            mapViewModel.places.observe(viewLifecycleOwner, Observer { res ->
+                for (place in res){
+                    val marker = LatLng(place!!.latitude.toDouble(), place.longitude.toDouble())
+                    googleMap.addMarker(
+                        MarkerOptions()
+                            .position(marker)
+                            .title(place.name)
+                    )
+                }
+            })
         })
 
         return root

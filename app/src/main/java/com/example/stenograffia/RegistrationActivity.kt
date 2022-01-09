@@ -52,22 +52,12 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         btnRegistration.setOnClickListener {
-            loading(this,loading)
-            username.isFocusable = false
-            username.isLongClickable = false
-            username.isCursorVisible = false
-            email.isFocusable = false
-            email.isLongClickable = false
-            email.isCursorVisible = false
-            password.isFocusable = false
-            password.isLongClickable = false
-            password.isCursorVisible = false
-            btnRegistration.isEnabled = false
-            btnRegistration.isClickable = false
             if (username.text.isNotEmpty()
                 && email.text.isNotEmpty()
                 && password.text.isNotEmpty()
             ) {
+                loading(this,loading)
+                blockChanges(username, email, password, btnRegistration, false)
                 AUTH.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
@@ -93,6 +83,8 @@ class RegistrationActivity : AppCompatActivity() {
 
                         } else {
                             Log.d("UP/IN/OUT", "createUserWithEmail:failure", task.exception)
+                            blockChanges(username, email, password, btnRegistration, true)
+                            loading.setImageDrawable(null)
                             Toast.makeText(
                                 baseContext,
                                 "Ой! Что-то пошло не так(",
@@ -125,4 +117,15 @@ class RegistrationActivity : AppCompatActivity() {
                 Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
             }
         }
+
+    private fun blockChanges(name: EditText, mail: EditText, password:EditText, btnRegistration:Button, boolean: Boolean){
+        name.isLongClickable = boolean
+        name.isCursorVisible = boolean
+        mail.isLongClickable = boolean
+        mail.isCursorVisible = boolean
+        password.isLongClickable = boolean
+        password.isCursorVisible = boolean
+        btnRegistration.isEnabled = boolean
+        btnRegistration.isClickable = boolean
+    }
 }

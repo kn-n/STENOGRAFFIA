@@ -22,21 +22,14 @@ class SignInActivity : AppCompatActivity() {
         val registration = findViewById<LinearLayout>(R.id.registration)
         val loading = findViewById<ImageView>(R.id.loading)
 
-        btnLogIn.isEnabled = true
-        btnLogIn.isClickable = true
+
+        blockChanges(mail, password, btnLogIn, true)
 
         btnLogIn.setOnClickListener {
-            loading(this,loading)
-            mail.isFocusable = false
-            mail.isLongClickable = false
-            mail.isCursorVisible = false
-            password.isFocusable = false
-            password.isLongClickable = false
-            password.isCursorVisible = false
-            btnLogIn.isEnabled = false
-            btnLogIn.isClickable = false
             if (mail.text.isNotEmpty()
                 && password.text.isNotEmpty()) {
+                loading(this,loading)
+                blockChanges(mail, password, btnLogIn, false)
                 AUTH.signInWithEmailAndPassword(mail.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
@@ -46,6 +39,8 @@ class SignInActivity : AppCompatActivity() {
                             startActivity(intent)
                         } else {
                             Log.d("UP/IN/OUT", "signInWithEmail:failure", task.exception)
+                            blockChanges(mail, password, btnLogIn, true)
+                            loading.setImageDrawable(null)
                             Toast.makeText(
                                 baseContext, "Неверный e-mail или пароль",
                                 Toast.LENGTH_SHORT
@@ -53,6 +48,7 @@ class SignInActivity : AppCompatActivity() {
                         }
                     }
             }else{
+                blockChanges(mail, password, btnLogIn, true)
                 Toast.makeText(baseContext, "Заполните все поля", Toast.LENGTH_SHORT).show()
             }
         }
@@ -61,5 +57,15 @@ class SignInActivity : AppCompatActivity() {
             val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
         }
+
+
+    }
+    private fun blockChanges(mail: EditText, password:EditText, btnLogIn:Button, boolean: Boolean){
+        mail.isLongClickable = boolean
+        mail.isCursorVisible = boolean
+        password.isLongClickable = boolean
+        password.isCursorVisible = boolean
+        btnLogIn.isEnabled = boolean
+        btnLogIn.isClickable = boolean
     }
 }
