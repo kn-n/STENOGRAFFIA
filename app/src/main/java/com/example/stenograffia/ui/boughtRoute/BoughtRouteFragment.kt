@@ -42,10 +42,6 @@ class BoughtRouteFragment:Fragment(), GoogleMap.OnMarkerClickListener {
 
         boughtRouteViewModel = ViewModelProvider(this,  BoughtRouteModelFactory(routeId)).get(BoughtRouteViewModel::class.java)
 
-//        boughtRouteViewModel.text.observe(viewLifecycleOwner, Observer {
-//
-//        })
-
         map.onCreate(savedInstanceState)
         map.getMapAsync(OnMapReadyCallback {
             googleMap = it
@@ -56,10 +52,9 @@ class BoughtRouteFragment:Fragment(), GoogleMap.OnMarkerClickListener {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 11.5f))
             googleMap.setOnMarkerClickListener(this)
 
-            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer {
-                val points = it
+            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
                 for (point in points){
-                    val marker = LatLng(56.829890, 60.600504)
+                    val marker = LatLng(point!!.latitude.toDouble(), point.longitude.toDouble())
                     googleMap.addMarker(
                         MarkerOptions()
                             .position(marker)
