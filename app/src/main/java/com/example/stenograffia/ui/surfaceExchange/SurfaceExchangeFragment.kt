@@ -1,6 +1,7 @@
 package com.example.stenograffia.ui.surfaceExchange
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.stenograffia.MenuActivity
 import com.example.stenograffia.R
 import com.example.stenograffia.ui.data.Models.Surface
 import com.example.stenograffia.ui.data.firebase.*
@@ -24,6 +26,7 @@ class SurfaceExchangeFragment : Fragment() {
 
     private lateinit var surfaceExchangeViewModel: SurfaceExchangeViewModel
     var mExchangeUri: String = ""
+    var uid: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +42,7 @@ class SurfaceExchangeFragment : Fragment() {
         val surfaceAddress = root.findViewById<EditText>(R.id.address)
         val surfaceDescription = root.findViewById<EditText>(R.id.description)
         val btnSend = root.findViewById<Button>(R.id.btn_send)
+        uid = UUID.randomUUID().toString()
 
         surfaceExchangeViewModel =
             ViewModelProvider(this).get(SurfaceExchangeViewModel::class.java)
@@ -47,21 +51,30 @@ class SurfaceExchangeFragment : Fragment() {
             btnSend.setOnClickListener {
                 if (surfaceAddress.text.isNotEmpty() && surfaceDescription.text.isNotEmpty() && mExchangeUri != "") {
                     initFirebase()
-                    val uid = UUID.randomUUID()
                     REF_STORAGE_ROOT.child(FOLDER_SURFACE_EXCHANGE).child(AUTH.currentUser!!.uid)
-                        .child(uid.toString()).putFile(mExchangeUri.toUri())
-                    REF_STORAGE_ROOT.child(NODE_SURFACE_EXCHANGE).child(AUTH.currentUser!!.uid)
-                        .child(uid.toString()).downloadUrl.addOnCompleteListener {
+                        .child(uid).putFile(mExchangeUri.toUri()).addOnCompleteListener {
                             if (it.isSuccessful) {
-                                val surface = Surface(
-                                    AUTH.currentUser!!.uid,
-                                    it.result.toString(),
-                                    surfaceAddress.text.toString(),
-                                    surfaceDescription.text.toString()
-                                )
-                                REF_DATABASE_ROOT.child(NODE_SURFACE_EXCHANGE).child(uid.toString()).setValue(surface)
+                                REF_STORAGE_ROOT.child(FOLDER_SURFACE_EXCHANGE).child(AUTH.currentUser!!.uid)
+                                    .child(uid).downloadUrl.addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            REF_DATABASE_ROOT.child(NODE_SURFACE_EXCHANGE).child(uid)
+                                                .child("imgUrlForExchange").setValue(it.result.toString())
+                                        }
+                                    }
+                            } else {
+                                Toast.makeText(context,"Не успел:(", Toast.LENGTH_LONG).show()
                             }
                         }
+                    val surface = Surface(
+                        AUTH.currentUser!!.uid,
+                        surfaceAddress.text.toString(),
+                        surfaceDescription.text.toString()
+                    )
+                    REF_DATABASE_ROOT.child(NODE_SURFACE_EXCHANGE).child(uid.toString())
+                        .setValue(surface)
+
+                    val intent = Intent(context, MenuActivity::class.java)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(context, "Заполните все поля!", Toast.LENGTH_LONG).show()
                 }

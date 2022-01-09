@@ -69,18 +69,33 @@ class EditAccFragment : Fragment() {
                 AUTH.currentUser!!.updatePassword(password.text.toString())
             }
             if (email.text.isNotEmpty()) {
-                AUTH.currentUser!!.updateEmail(email.text.toString())
-            }
-            REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("name")
-                .setValue(username.text.toString())
-            pathForImg.downloadUrl.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val urlFromStorage = it.result.toString()
-                    REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid)
-                        .child("imgUri").setValue(urlFromStorage)
-                    view.findNavController().navigate(R.id.nav_profile)
+                AUTH.currentUser!!.updateEmail(email.text.toString()).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid)
+                            .putFile(mProfileUri.toUri()).addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    pathForImg.downloadUrl.addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            val urlFromStorage = it.result.toString()
+                                            REF_DATABASE_ROOT.child(NODE_USERS)
+                                                .child(AUTH.currentUser!!.uid)
+                                                .child("imgUri").setValue(urlFromStorage)
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid)
+                            .child("name")
+                            .setValue(username.text.toString())
+                        view.findNavController().navigate(R.id.nav_profile)
+                    } else {
+                        Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
+
         }
 
         return root
@@ -95,7 +110,7 @@ class EditAccFragment : Fragment() {
                 val fileUri = data?.data!!
                 val img = requireView().findViewById<CircleImageView>(R.id.img)
                 mProfileUri = fileUri.toString()
-                REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid).putFile(mProfileUri.toUri())
+
                 img.setImageURI(fileUri)
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
                 Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()

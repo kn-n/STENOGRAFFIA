@@ -19,4 +19,14 @@ class Surface {
         this.address = address
         this.description = description
     }
+
+    constructor(
+        sentUserId: String,
+        address: String,
+        description: String
+    ) {
+        this.sentUserId = sentUserId
+        this.address = address
+        this.description = description
+    }
 }
