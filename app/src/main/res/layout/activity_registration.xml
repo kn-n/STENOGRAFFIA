@@ -85,6 +85,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
+    <ImageView
+        android:id="@+id/loading"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registration"
+        app:layout_constraintBottom_toTopOf="@id/sign_in"/>
+
     <LinearLayout
         android:id="@+id/sign_in"
         android:layout_width="match_parent"

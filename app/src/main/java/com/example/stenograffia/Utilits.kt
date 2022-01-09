@@ -1,6 +1,11 @@
 package com.example.stenograffia
 
+import android.app.Activity
+import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.stenograffia.ui.data.firebase.FOLDER_PROFILE_IMAGE
 import com.example.stenograffia.ui.data.firebase.REF_STORAGE_ROOT
 import com.squareup.picasso.Picasso
@@ -38,4 +43,12 @@ fun ImageView.downloadAndSetImage(url: String) {
             .load(url)
             .into(this)
     }
+}
+
+fun loading(activity:AppCompatActivity,container: ImageView){
+    Glide.with(activity).load(R.drawable.gif1).into(container)
+}
+
+fun loading(fragment:Fragment,container: CircleImageView){
+    Glide.with(fragment).load(R.drawable.gif1).into(container)
 }

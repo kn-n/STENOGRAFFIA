@@ -8,13 +8,11 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
@@ -38,6 +36,11 @@ class RegistrationActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password)
         val btnRegistration = findViewById<Button>(R.id.registration)
         val signIn = findViewById<LinearLayout>(R.id.sign_in)
+        val loading = findViewById<ImageView>(R.id.loading)
+
+        btnRegistration.isEnabled = true
+        btnRegistration.isClickable = true
+
         img.setOnClickListener {
             ImagePicker
                 .with(this)
@@ -49,6 +52,18 @@ class RegistrationActivity : AppCompatActivity() {
         }
 
         btnRegistration.setOnClickListener {
+            loading(this,loading)
+            username.isFocusable = false
+            username.isLongClickable = false
+            username.isCursorVisible = false
+            email.isFocusable = false
+            email.isLongClickable = false
+            email.isCursorVisible = false
+            password.isFocusable = false
+            password.isLongClickable = false
+            password.isCursorVisible = false
+            btnRegistration.isEnabled = false
+            btnRegistration.isClickable = false
             if (username.text.isNotEmpty()
                 && email.text.isNotEmpty()
                 && password.text.isNotEmpty()
@@ -59,11 +74,11 @@ class RegistrationActivity : AppCompatActivity() {
                             val user = User(AUTH.currentUser!!.uid, username.text.toString(), "", ArrayList())
                             addNewUser(user)
                             val path = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid)
-                            path.putFile(mProfileUri.toUri()).addOnCompleteListener {
+                            path.putFile(Uri.parse(mProfileUri)).addOnCompleteListener {
                                 if (it.isSuccessful) {
-                                    path.downloadUrl.addOnCompleteListener {
-                                        if (it.isSuccessful) {
-                                            val urlFromStorage = it.result.toString()
+                                    path.downloadUrl.addOnCompleteListener { uri ->
+                                        if (uri.isSuccessful) {
+                                            val urlFromStorage = uri.result.toString()
                                             REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("imgUri").setValue(urlFromStorage)
                                             val intent = Intent(this, MenuActivity::class.java)
                                             startActivity(intent)
