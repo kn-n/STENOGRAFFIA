@@ -8,6 +8,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <string name="api_key">AIzaSyAIYgp4_fQM9IN3P5GI2a_s2vxNz4ysrjQ</string>
+
     <!--labels-->
     <string name="menu_profile">Мой профиль</string>
     <string name="menu_map">Карта</string>
