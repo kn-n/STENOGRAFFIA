@@ -84,7 +84,7 @@ class EditAccFragment : Fragment() {
                                         }
                                     }
                                 } else {
-                                    Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
+//                                    Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
                                 }
                             }
                         REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid)
@@ -92,7 +92,7 @@ class EditAccFragment : Fragment() {
                             .setValue(username.text.toString())
                         view.findNavController().navigate(R.id.nav_profile)
                     } else {
-                        Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
                     }
                 }
             }
