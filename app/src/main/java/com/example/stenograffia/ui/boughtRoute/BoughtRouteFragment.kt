@@ -39,9 +39,10 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     private var destinationLatitude: Double = 56.788791
     private var destinationLongitude: Double = 60.647781
 
-    private var origin: LatLng = LatLng(0.0, 0.0)
+    private var origin: LatLng = LatLng(56.838358, 60.603405)
     private var destination: LatLng = LatLng(0.0, 0.0)
     private var waypoints: String = ""
+    private var apiKey: String = ""
 
 
     override fun onCreateView(
@@ -61,7 +62,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         val ai: ApplicationInfo = requireContext().packageManager
             .getApplicationInfo(requireContext().packageName, PackageManager.GET_META_DATA)
         val value = ai.metaData["com.google.android.geo.API_KEY"]
-        val apiKey = value.toString()
+        apiKey = value.toString()
 
         map.onCreate(savedInstanceState)
         map.getMapAsync(this)
@@ -74,26 +75,26 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             )
             googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 14f))
             googleMapLate.setOnMarkerClickListener(this)
-            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
-                for (id in 0 until points.size) {
-                    if (id == 0) origin =
-                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-                    else if (id == points.size - 1) destination =
-                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-                    else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
-                    else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
-
-                    val marker =
-                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-
-                    googleMapLate.addMarker(
-                        MarkerOptions()
-                            .position(marker)
-                    )
-                }
-            })
-            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
-            GetDirection(urll).execute()
+//            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
+//                for (id in 0 until points.size) {
+//                    if (id == 0) origin =
+//                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+//                    else if (id == points.size - 1) destination =
+//                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+//                    else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
+//                    else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
+//
+//                    val marker =
+//                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+//
+//                    googleMapLate.addMarker(
+//                        MarkerOptions()
+//                            .position(marker)
+//                    )
+//                }
+//            })
+//            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
+//            GetDirection(urll).execute()
             googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
         }
 
@@ -146,15 +147,34 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 lineOptions.color(Color.BLUE)
                 lineOptions.geodesic(true)
             }
-            Toast.makeText(context,"such a zen кишки",Toast.LENGTH_SHORT).show()
             googleMapLate.addPolyline(lineOptions)
         }
     }
 
     override fun onMapReady(p0: GoogleMap) {
         googleMapLate = p0!!
-        val originLocation = LatLng(origin.latitude, origin.longitude)
-        googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 18F))
+        boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
+            for (id in 0 until points.size) {
+                if (id == 0) origin =
+                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+                else if (id == points.size - 1) destination =
+                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+                else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
+                else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
+
+                val marker =
+                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+
+                googleMapLate.addMarker(
+                    MarkerOptions()
+                        .position(marker)
+                )
+            }
+            googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
+            GetDirection(urll).execute()
+            googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+        })
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {

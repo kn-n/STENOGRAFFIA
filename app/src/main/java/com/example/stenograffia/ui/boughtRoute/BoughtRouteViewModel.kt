@@ -3,7 +3,6 @@ package com.example.stenograffia.ui.boughtRoute
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.stenograffia.changeFormatToLatLng
 import com.example.stenograffia.ui.data.Models.LatLngDouble
 import com.example.stenograffia.ui.data.Models.Point
 import com.example.stenograffia.ui.data.firebase.AppValueEventListener
