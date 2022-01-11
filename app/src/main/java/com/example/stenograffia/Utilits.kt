@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.stenograffia.ui.data.firebase.FOLDER_PROFILE_IMAGE
 import com.example.stenograffia.ui.data.firebase.REF_STORAGE_ROOT
+import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -49,6 +50,3 @@ fun loading(activity:AppCompatActivity,container: ImageView){
     Glide.with(activity).load(R.drawable.gif1).into(container)
 }
 
-fun loading(fragment:Fragment,container: CircleImageView){
-    Glide.with(fragment).load(R.drawable.gif1).into(container)
-}

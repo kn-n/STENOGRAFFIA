@@ -1,23 +1,26 @@
 package com.example.stenograffia.ui.boughtRoute
 
 import android.annotation.SuppressLint
-import android.content.ContextWrapper
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.nfc.Tag
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.stenograffia.R
+import com.example.stenograffia.ui.data.Models.LatLngDouble
 import com.example.stenograffia.ui.data.Models.Point
+import com.example.stenograffia.ui.data.firebase.AppValueEventListener
+import com.example.stenograffia.ui.data.firebase.NODE_ROUTES
+import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
+import com.example.stenograffia.ui.data.firebase.initFirebase
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
@@ -40,6 +43,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     private var destination: LatLng = LatLng(0.0, 0.0)
     private var waypoints: String = ""
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,9 +51,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     ): View? {
         val root = inflater.inflate(R.layout.fragment_route_map, container, false)
         val routeId = requireArguments().getString("routeId")
-
         idRoute = routeId!!
-        //Find view by id
         map = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
         boughtRouteViewModel = ViewModelProvider(this, BoughtRouteModelFactory(routeId)).get(
@@ -72,99 +74,89 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             )
             googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 14f))
             googleMapLate.setOnMarkerClickListener(this)
-
             boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
                 for (id in 0 until points.size) {
-                    if (id == 0) origin = LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-                    else if (id == points.size - 1) destination = LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-                    else if (id == points.size - 2) waypoints+="${points[id]!!.latitude},${points[id]!!.longitude}"
-                    else waypoints+="${points[id]!!.latitude},${points[id]!!.longitude}|"
+                    if (id == 0) origin =
+                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+                    else if (id == points.size - 1) destination =
+                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+                    else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
+                    else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
 
-                    val marker = LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+                    val marker =
+                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
 
                     googleMapLate.addMarker(
                         MarkerOptions()
                             .position(marker)
                     )
-                    val urll = getDirectionURL(origin, destination, waypoints, apiKey)
-                    GetDirection(urll).execute()
-                    googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
                 }
             })
+            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
+            GetDirection(urll).execute()
+            googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
         }
-
-//        map.getMapAsync(OnMapReadyCallback {
-//
-//            googleMapLate = it
-//            val ekbBounds = LatLngBounds(
-//                LatLng((56.848344), 60.565490),// SW bounds
-//                LatLng((56.867354), 60.602902)// NE bounds
-//            )
-//            googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 14f))
-//            googleMapLate.setOnMarkerClickListener(this)
-//
-//            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
-//                for (point in points) {
-//                    val marker = LatLng(point!!.latitude.toDouble(), point.longitude.toDouble())
-//                    googleMapLate.addMarker(
-//                        MarkerOptions()
-//                            .position(marker)
-//                    )
-//                }
-//            })
-//        })
 
         return root
     }
 
-    private fun getDirectionURL(origin:LatLng, dest:LatLng, waypoints: String, secret: String) : String{
+    private fun getDirectionURL(
+        origin: LatLng,
+        dest: LatLng,
+        waypoints: String,
+        secret: String
+    ): String {
         return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${dest.latitude},${dest.longitude}&waypoints=$waypoints&mode=walking&key=$secret"
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class GetDirection(val url : String) : AsyncTask<Void, Void, List<List<LatLng>>>(){
+    private inner class GetDirection(val url: String) :
+        AsyncTask<Void, Void, List<List<LatLng>>>() {
         override fun doInBackground(vararg params: Void?): List<List<LatLng>> {
             val client = OkHttpClient()
             val request = Request.Builder().url(url).build()
             val response = client.newCall(request).execute()
             val data = response.body()!!.string()
 
-            val result =  ArrayList<List<LatLng>>()
-            try{
-                val respObj = Gson().fromJson(data,MapData::class.java)
-                val path =  ArrayList<LatLng>()
-                for (n in 0 until respObj.routes[0].legs.size){
-                    for (i in 0 until respObj.routes[0].legs[n].steps.size){
+            val result = ArrayList<List<LatLng>>()
+            try {
+                val respObj = Gson().fromJson(data, MapData::class.java)
+                val path = ArrayList<LatLng>()
+                for (n in 0 until respObj.routes[0].legs.size) {
+                    for (i in 0 until respObj.routes[0].legs[n].steps.size) {
                         path.addAll(decodePolyline(respObj.routes[0].legs[n].steps[i].polyline.points))
                     }
                 }
 
                 result.add(path)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
             return result
         }
 
         override fun onPostExecute(result: List<List<LatLng>>) {
-            val lineoption = PolylineOptions()
-            for (i in result.indices){
-                lineoption.addAll(result[i])
-                lineoption.width(10f)
-                lineoption.color(Color.BLUE)
-                lineoption.geodesic(true)
+            val lineOptions = PolylineOptions()
+            initFirebase()
+            for (i in result.indices) {
+                REF_DATABASE_ROOT.child(NODE_ROUTES).child(idRoute).child("polyline")
+                    .setValue(result[i])
+                lineOptions.addAll(result[i])
+                lineOptions.width(10f)
+                lineOptions.color(Color.BLUE)
+                lineOptions.geodesic(true)
             }
-            googleMapLate.addPolyline(lineoption)
+            Toast.makeText(context,"such a zen кишки",Toast.LENGTH_SHORT).show()
+            googleMapLate.addPolyline(lineOptions)
         }
     }
 
     override fun onMapReady(p0: GoogleMap) {
         googleMapLate = p0!!
         val originLocation = LatLng(origin.latitude, origin.longitude)
-        googleMapLate.clear()
-        googleMapLate.addMarker(MarkerOptions().position(originLocation))
         googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 18F))
     }
+
     override fun onMarkerClick(marker: Marker): Boolean {
         boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer {
             val bundle = Bundle()
@@ -214,7 +206,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             } while (b >= 0x20)
             val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
             lng += dlng
-            val latLng = LatLng((lat.toDouble() / 1E5),(lng.toDouble() / 1E5))
+            val latLng = LatLng((lat.toDouble() / 1E5), (lng.toDouble() / 1E5))
             poly.add(latLng)
         }
         return poly
