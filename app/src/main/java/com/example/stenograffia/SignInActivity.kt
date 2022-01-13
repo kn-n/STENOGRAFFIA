@@ -6,8 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.navigation.findNavController
-import com.example.stenograffia.ui.data.firebase.AUTH
-import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.example.stenograffia.ui.data.firebase.*
 
 class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +20,6 @@ class SignInActivity : AppCompatActivity() {
         val btnLogIn = findViewById<Button>(R.id.sign_in)
         val registration = findViewById<LinearLayout>(R.id.registration)
         val loading = findViewById<ImageView>(R.id.loading)
-
 
         blockChanges(mail, password, btnLogIn, true)
 
