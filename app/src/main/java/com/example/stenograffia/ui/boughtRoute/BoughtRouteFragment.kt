@@ -1,15 +1,22 @@
 package com.example.stenograffia.ui.boughtRoute
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,8 +28,12 @@ import com.example.stenograffia.ui.data.firebase.AppValueEventListener
 import com.example.stenograffia.ui.data.firebase.NODE_ROUTES
 import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
 import com.example.stenograffia.ui.data.firebase.initFirebase
+import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -43,7 +54,18 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     private var destination: LatLng = LatLng(0.0, 0.0)
     private var waypoints: String = ""
     private var apiKey: String = ""
-
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val locationCallback: LocationCallback = object: LocationCallback() {
+        override fun onLocationResult(p0: LocationResult?) {
+            if (p0 == null) {
+                return
+            }
+            for (location: Location in p0.locations) {
+                Log.d("hey!", "onLocationResult: $location")
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,29 +97,20 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             )
             googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(ekbBounds.center, 14f))
             googleMapLate.setOnMarkerClickListener(this)
-//            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
-//                for (id in 0 until points.size) {
-//                    if (id == 0) origin =
-//                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-//                    else if (id == points.size - 1) destination =
-//                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-//                    else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
-//                    else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
-//
-//                    val marker =
-//                        LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-//
-//                    googleMapLate.addMarker(
-//                        MarkerOptions()
-//                            .position(marker)
-//                    )
-//                }
-//            })
-//            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
-//            GetDirection(urll).execute()
             googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
         }
 
+        locationPermissionRequest.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        locationRequest = LocationRequest.create()
+        locationRequest.interval = 4000
+        locationRequest.fastestInterval = 2000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         return root
     }
 
@@ -230,6 +243,58 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             poly.add(latLng)
         }
         return poly
+    }
+
+    fun checkSettingsAndStartLocationUpdates() {
+        val request: LocationSettingsRequest = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest).build()
+        val client: SettingsClient = LocationServices.getSettingsClient(requireContext())
+        val locationSettingsResponse: Task<LocationSettingsResponse> = client.checkLocationSettings(request)
+        locationSettingsResponse.addOnSuccessListener(OnSuccessListener<LocationSettingsResponse>() {
+            startLocationUpdates()
+        })
+    }
+
+    fun startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallback, Looper.getMainLooper())
+    }
+
+    fun stopLocationUpdates() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                // Precise location access granted.
+                checkSettingsAndStartLocationUpdates()
+            }
+            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                // Only approximate location access granted.
+            }
+            else -> {
+                // No location access granted.
+            }
+        }
     }
 
 }
