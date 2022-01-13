@@ -38,6 +38,10 @@ import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import com.google.android.gms.maps.model.LatLng
+
+
+
 
 class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
@@ -185,6 +189,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 )
             }
             enableUserLocation()
+            zoomToUserLocation()
             googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
             val urll = getDirectionURL(origin, destination, waypoints, apiKey)
             GetDirection(urll).execute()
@@ -203,7 +208,23 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         ) {
             googleMapLate.isMyLocationEnabled = true
         }
+    }
 
+    private fun zoomToUserLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val locationTask: Task<Location> = fusedLocationProviderClient.lastLocation
+            locationTask.addOnSuccessListener {
+                val latLng = LatLng(it.latitude, it.longitude)
+                googleMapLate.addMarker(MarkerOptions().position(latLng))
+            }
+        }
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -261,7 +282,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         return poly
     }
 
-    fun checkSettingsAndStartLocationUpdates() {
+    private fun checkSettingsAndStartLocationUpdates() {
         val request: LocationSettingsRequest = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest).build()
         val client: SettingsClient = LocationServices.getSettingsClient(requireContext())
@@ -271,7 +292,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         })
     }
 
-    fun startLocationUpdates() {
+    private fun startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -289,7 +310,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
     }
 
-    val locationPermissionRequest = registerForActivityResult(
+    private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         when {
