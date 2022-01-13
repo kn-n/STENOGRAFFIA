@@ -13,7 +13,7 @@ class MapViewModel : ViewModel() {
 
     private val _places = MutableLiveData<ArrayList<SimplePlace?>>().apply {
         initFirebase()
-        REF_DATABASE_ROOT.child(NODE_ALL_PLACES).addValueEventListener(
+        REF_DATABASE_ROOT.child("Places").addValueEventListener(
             AppValueEventListener{ res ->
                 val allPlaces = res.children.map { it.getValue(SimplePlace::class.java) }
                 value = ArrayList(allPlaces)
