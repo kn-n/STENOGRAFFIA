@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
@@ -12,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -58,15 +60,14 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             if (locationResult == null) {
                 return
             }
-            var markerr: Marker? = null
+
             for (location in locationResult.locations) {
-                Log.d("hey!", "onLocationResult: $location")
-                val markerCords = LatLng(location.latitude, location.longitude)
-                markerr?.remove()
-                markerr = googleMapLate.addMarker(
-                    MarkerOptions()
-                        .position(markerCords)
-                )
+//                Log.d("hey!", "onLocationResult: $location")
+//                val markerCords = LatLng(location.latitude, location.longitude)
+//                googleMapLate.addMarker(
+//                    MarkerOptions()
+//                        .position(markerCords)
+//                )
             }
         }
     }
@@ -125,7 +126,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         waypoints: String,
         secret: String
     ): String {
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${dest.latitude},${dest.longitude}&waypoints=$waypoints&mode=walking&key=$secret"
+        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${dest.latitude},${dest.longitude}&waypoints=optimize:true$waypoints&mode=walking&key=$secret"
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -162,7 +163,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                     .setValue(result[i])
                 lineOptions.addAll(result[i])
                 lineOptions.width(10f)
-                lineOptions.color(Color.BLUE)
+                lineOptions.color(Color.rgb(252,214,0))
                 lineOptions.geodesic(true)
             }
             googleMapLate.addPolyline(lineOptions)
@@ -171,76 +172,108 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
 
     override fun onMapReady(p0: GoogleMap) {
         googleMapLate = p0!!
-        boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
-            for (id in 0 until points.size) {
-                if (id == 0) origin =
-                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-                else if (id == points.size - 1) destination =
-                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-                else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
-                else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
+        enableUserLocation()
+        zoomToUserLocation()
+//        boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
+//            for (id in 0 until points.size) {
+//                if (id == 0) origin =
+//                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+//                else if (id == points.size - 1) destination =
+//                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+//                else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
+//                else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
+//
+//                val marker =
+//                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+//
+//                googleMapLate.addMarker(
+//                    MarkerOptions()
+//                        .position(marker)
+//                )
+//            }
+//            googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+//            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
+//            GetDirection(urll).execute()
+//            googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+//        })
+    }
 
-                val marker =
-                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
+    private fun direction(){
+        boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { places ->
+            boughtRouteViewModel.points.observe(viewLifecycleOwner, Observer { points ->
+                for (point in points){
+                    if (places.contains(point!!.id)){
+                        if (point.id == places[places.size-1]) destination =
+                            LatLng(point.latitude.toDouble(), point.longitude.toDouble())
+                        waypoints+="|${point.latitude},${point.longitude}"
 
-                googleMapLate.addMarker(
-                    MarkerOptions()
-                        .position(marker)
-                )
-            }
+                        val marker =
+                            LatLng(point.latitude.toDouble(), point.longitude.toDouble())
+
+                        googleMapLate.addMarker(
+                            MarkerOptions()
+                                .position(marker)
+                        )
+                    }
+                }
             googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
             val urll = getDirectionURL(origin, destination, waypoints, apiKey)
             GetDirection(urll).execute()
             googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+            })
         })
     }
 
-//    private fun enableUserLocation() {
-//        if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            googleMapLate.isMyLocationEnabled = true
-//        }
-//    }
-//
-//    private fun zoomToUserLocation() {
-//        if (ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_COARSE_LOCATION
-//            ) != PackageManager.PERMISSION_GRANTED
-//        ) {
-//            val locationTask: Task<Location> = fusedLocationProviderClient.lastLocation
-//            locationTask.addOnSuccessListener {
-//                val latLng = LatLng(it.latitude, it.longitude)
-//                googleMapLate.addMarker(MarkerOptions().position(latLng))
-//            }
-//        }
-//    }
+    private fun enableUserLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+        }
+        googleMapLate.isMyLocationEnabled = true
+    }
+
+    private fun zoomToUserLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+        }
+        val locationTask: Task<Location>? = fusedLocationProviderClient.lastLocation
+        locationTask!!.addOnSuccessListener {
+            origin = LatLng(it.latitude, it.longitude)
+            direction()
+//            googleMapLate.addMarker(MarkerOptions().position(latLng))
+        }
+    }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer {
+        boughtRouteViewModel.points.observe(viewLifecycleOwner, Observer {
             val bundle = Bundle()
             val points = it
-            val markerPoint = Point(
-                marker.position.latitude.toString(),
-                marker.position.longitude.toString()
-            )
-            var i = 0
-            while (i < points.size) {
-                if (points[i]!!.latitude == markerPoint.latitude && points[i]!!.longitude == markerPoint.longitude) {
+//            var i = 0
+//            while (i < points.size) {
+//                if (points[i]!!.latitude == marker.position.latitude.toString() && points[i]!!.longitude == marker.position.longitude.toString()) {
+//                    bundle.putString("routeId", idRoute)
+//                    bundle.putString("placeId", (i + 1).toString())
+//                    break
+//                } else {
+//                    i += 1
+//                }
+//            }
+            for (i in 0 until points.size){
+                if (points[i]!!.latitude == marker.position.latitude.toString() && points[i]!!.longitude == marker.position.longitude.toString()) {
                     bundle.putString("routeId", idRoute)
-                    bundle.putString("placeId", (i + 1).toString())
+                    bundle.putString("placeId", points[i]!!.id)
                     break
-                } else {
-                    i += 1
                 }
             }
             view?.findNavController()?.navigate(R.id.routeGuideFragment, bundle)
@@ -300,13 +333,13 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
-        }
 
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     fun stopLocationUpdates() {

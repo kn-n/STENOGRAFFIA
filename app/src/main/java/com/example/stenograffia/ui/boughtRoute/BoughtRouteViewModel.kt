@@ -12,14 +12,25 @@ import com.example.stenograffia.ui.data.firebase.initFirebase
 import com.google.android.gms.maps.model.LatLng
 
 class BoughtRouteViewModel(private val id: String) : ViewModel() {
-    private val _placesId = MutableLiveData<ArrayList<Point?>>().apply {
+    private val _points = MutableLiveData<ArrayList<Point?>>().apply {
+        initFirebase()
+        REF_DATABASE_ROOT.child("Places").addValueEventListener(
+            AppValueEventListener{ res ->
+                val point = res.children.map { it.getValue(Point::class.java) }
+                value = ArrayList(point)
+            }
+        )
+    }
+    val points: LiveData<ArrayList<Point?>> = _points
+
+    private val _placesId = MutableLiveData<ArrayList<String?>>().apply {
         initFirebase()
         REF_DATABASE_ROOT.child(NODE_ROUTES).child(id).child("Points").addValueEventListener(
             AppValueEventListener { res ->
-                val points = res.children.map { it.getValue(Point::class.java) }
+                val points = res.children.map { it.getValue(String::class.java) }
                 value = ArrayList(points)
             }
         )
     }
-    val placesId: LiveData<ArrayList<Point?>> = _placesId
+    val placesId: LiveData<ArrayList<String?>> = _placesId
 }

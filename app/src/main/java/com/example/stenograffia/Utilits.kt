@@ -49,4 +49,7 @@ fun ImageView.downloadAndSetImage(url: String) {
 fun loading(activity:AppCompatActivity,container: ImageView){
     Glide.with(activity).load(R.drawable.gif1).into(container)
 }
+fun loading(fragment:Fragment,container: ImageView){
+    Glide.with(fragment).load(R.drawable.gif1).into(container)
+}
 

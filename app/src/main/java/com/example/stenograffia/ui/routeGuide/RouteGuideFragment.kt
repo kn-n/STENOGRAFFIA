@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.stenograffia.R
 import com.example.stenograffia.downloadAndSetImage
+import com.example.stenograffia.loading
 import java.util.*
 
 
@@ -41,15 +42,15 @@ class RouteGuideFragment : Fragment() {
         val routeId = requireArguments().getString("routeId")
         val placeId = requireArguments().getString("placeId")
 
-        routeGuideViewModel = ViewModelProvider(this, RouteGuideModelFactory(routeId!!, placeId!!)).get(
+        routeGuideViewModel = ViewModelProvider(this, RouteGuideModelFactory(placeId!!)).get(
             RouteGuideViewModel::class.java
         )
 
         routeGuideViewModel.place.observe(viewLifecycleOwner, Observer {
-            image.downloadAndSetImage(it.Img_url)
-            name.text = it.Name
-            description.text = it.Description
-            mediaPlayer = MediaPlayer.create(context, Uri.parse(it.Audio))
+            image.downloadAndSetImage(it.img_url)
+            name.text = it.name
+            description.text = it.description
+            mediaPlayer = MediaPlayer.create(context, Uri.parse(it.audio))
             seekBar.max = mediaPlayer.duration
             seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
