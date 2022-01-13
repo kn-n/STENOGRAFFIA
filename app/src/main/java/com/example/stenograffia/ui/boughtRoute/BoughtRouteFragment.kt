@@ -2,11 +2,9 @@ package com.example.stenograffia.ui.boughtRoute
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
@@ -14,18 +12,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.stenograffia.R
-import com.example.stenograffia.ui.data.Models.LatLngDouble
 import com.example.stenograffia.ui.data.Models.Point
-import com.example.stenograffia.ui.data.firebase.AppValueEventListener
 import com.example.stenograffia.ui.data.firebase.NODE_ROUTES
 import com.example.stenograffia.ui.data.firebase.REF_DATABASE_ROOT
 import com.example.stenograffia.ui.data.firebase.initFirebase
@@ -39,8 +33,6 @@ import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import com.google.android.gms.maps.model.LatLng
-
-
 
 
 class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
@@ -61,13 +53,20 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     private var apiKey: String = ""
     private lateinit var locationRequest: LocationRequest
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private val locationCallback: LocationCallback = object: LocationCallback() {
-        override fun onLocationResult(p0: LocationResult?) {
-            if (p0 == null) {
+    private val locationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult?) {
+            if (locationResult == null) {
                 return
             }
-            for (location: Location in p0.locations) {
+            var markerr: Marker? = null
+            for (location in locationResult.locations) {
                 Log.d("hey!", "onLocationResult: $location")
+                val markerCords = LatLng(location.latitude, location.longitude)
+                markerr?.remove()
+                markerr = googleMapLate.addMarker(
+                    MarkerOptions()
+                        .position(markerCords)
+                )
             }
         }
     }
@@ -111,7 +110,8 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         )
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
         locationRequest = LocationRequest.create()
         locationRequest.interval = 4000
         locationRequest.fastestInterval = 2000
@@ -188,8 +188,6 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                         .position(marker)
                 )
             }
-            enableUserLocation()
-            zoomToUserLocation()
             googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
             val urll = getDirectionURL(origin, destination, waypoints, apiKey)
             GetDirection(urll).execute()
@@ -197,35 +195,35 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         })
     }
 
-    private fun enableUserLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            googleMapLate.isMyLocationEnabled = true
-        }
-    }
-
-    private fun zoomToUserLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            val locationTask: Task<Location> = fusedLocationProviderClient.lastLocation
-            locationTask.addOnSuccessListener {
-                val latLng = LatLng(it.latitude, it.longitude)
-                googleMapLate.addMarker(MarkerOptions().position(latLng))
-            }
-        }
-    }
+//    private fun enableUserLocation() {
+//        if (ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            googleMapLate.isMyLocationEnabled = true
+//        }
+//    }
+//
+//    private fun zoomToUserLocation() {
+//        if (ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            val locationTask: Task<Location> = fusedLocationProviderClient.lastLocation
+//            locationTask.addOnSuccessListener {
+//                val latLng = LatLng(it.latitude, it.longitude)
+//                googleMapLate.addMarker(MarkerOptions().position(latLng))
+//            }
+//        }
+//    }
 
     override fun onMarkerClick(marker: Marker): Boolean {
         boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer {
@@ -286,7 +284,8 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         val request: LocationSettingsRequest = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest).build()
         val client: SettingsClient = LocationServices.getSettingsClient(requireContext())
-        val locationSettingsResponse: Task<LocationSettingsResponse> = client.checkLocationSettings(request)
+        val locationSettingsResponse: Task<LocationSettingsResponse> =
+            client.checkLocationSettings(request)
         locationSettingsResponse.addOnSuccessListener(OnSuccessListener<LocationSettingsResponse>() {
             startLocationUpdates()
         })
@@ -301,7 +300,11 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest,locationCallback, Looper.getMainLooper())
+            fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
         }
 
     }
