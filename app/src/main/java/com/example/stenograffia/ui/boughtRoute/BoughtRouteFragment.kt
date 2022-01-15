@@ -239,8 +239,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-        }
-        googleMapLate.isMyLocationEnabled = true
+        } else googleMapLate.isMyLocationEnabled = true
     }
 
     private fun zoomToUserLocation() {
@@ -252,12 +251,13 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-        }
+        } else {
         val locationTask: Task<Location>? = fusedLocationProviderClient.lastLocation
         locationTask!!.addOnSuccessListener {
             origin = LatLng(it.latitude, it.longitude)
             direction()
 //            googleMapLate.addMarker(MarkerOptions().position(latLng))
+        }
         }
     }
 
@@ -339,13 +339,13 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
-        }
+        } else {
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
         )
+        }
     }
 
     fun stopLocationUpdates() {
