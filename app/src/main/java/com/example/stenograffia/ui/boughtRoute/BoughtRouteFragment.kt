@@ -107,8 +107,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
 
         locationPermissionRequest.launch(
             arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
         )
         fusedLocationProviderClient =
@@ -171,31 +170,38 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     }
 
     override fun onMapReady(p0: GoogleMap) {
-        googleMapLate = p0!!
-        enableUserLocation()
-        zoomToUserLocation()
-//        boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { points ->
-//            for (id in 0 until points.size) {
-//                if (id == 0) origin =
-//                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-//                else if (id == points.size - 1) destination =
-//                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-//                else if (id == points.size - 2) waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}"
-//                else waypoints += "${points[id]!!.latitude},${points[id]!!.longitude}|"
-//
-//                val marker =
-//                    LatLng(points[id]!!.latitude.toDouble(), points[id]!!.longitude.toDouble())
-//
-//                googleMapLate.addMarker(
-//                    MarkerOptions()
-//                        .position(marker)
-//                )
-//            }
-//            googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
-//            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
-//            GetDirection(urll).execute()
-//            googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
-//        })
+        googleMapLate = p0
+        if (ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            enableUserLocation()
+            zoomToUserLocation()
+        } else {
+            boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { places ->
+                boughtRouteViewModel.points.observe(viewLifecycleOwner, Observer { points ->
+                    for (point in points){
+                        if (places.contains(point!!.id)){
+                            when (point.id) {
+                                places[places.size-1] -> destination =
+                                    LatLng(point.latitude.toDouble(), point.longitude.toDouble())
+                                places[0] -> origin =
+                                    LatLng(point.latitude.toDouble(), point.longitude.toDouble())
+                                else -> waypoints+="|${point.latitude},${point.longitude}"
+                            }
+
+                            val marker =
+                                LatLng(point.latitude.toDouble(), point.longitude.toDouble())
+                            googleMapLate.addMarker(
+                                MarkerOptions()
+                                    .position(marker)
+                            )
+                        }
+                    }
+                    googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+                    val urll = getDirectionURL(origin, destination, waypoints, apiKey)
+                    GetDirection(urll).execute()
+                    googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+                })
+            })
+        }
     }
 
     private fun direction(){
