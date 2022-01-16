@@ -56,20 +56,28 @@ class RegistrationActivity : AppCompatActivity() {
                 && email.text.isNotEmpty()
                 && password.text.isNotEmpty()
             ) {
-                loading(this,loading)
+                loading(this, loading)
                 blockChanges(username, email, password, btnRegistration, false)
                 AUTH.createUserWithEmailAndPassword(email.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            val user = User(AUTH.currentUser!!.uid, username.text.toString(), "", ArrayList())
+                            val user = User(
+                                AUTH.currentUser!!.uid,
+                                username.text.toString(),
+                                "",
+                                ArrayList()
+                            )
                             addNewUser(user)
-                            val path = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE).child(AUTH.currentUser!!.uid)
+                            val path = REF_STORAGE_ROOT.child(FOLDER_PROFILE_IMAGE)
+                                .child(AUTH.currentUser!!.uid)
                             path.putFile(Uri.parse(mProfileUri)).addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     path.downloadUrl.addOnCompleteListener { uri ->
                                         if (uri.isSuccessful) {
                                             val urlFromStorage = uri.result.toString()
-                                            REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("imgUri").setValue(urlFromStorage)
+                                            REF_DATABASE_ROOT.child(NODE_USERS)
+                                                .child(AUTH.currentUser!!.uid).child("imgUri")
+                                                .setValue(urlFromStorage)
                                             val intent = Intent(this, MenuActivity::class.java)
                                             startActivity(intent)
                                         }
@@ -79,7 +87,6 @@ class RegistrationActivity : AppCompatActivity() {
                                     startActivity(intent)
                                 }
                             }
-                            Log.d("UP/IN/OUT", "createUserWithEmail:success")
 
                         } else {
                             Log.d("UP/IN/OUT", "createUserWithEmail:failure", task.exception)
@@ -108,7 +115,6 @@ class RegistrationActivity : AppCompatActivity() {
             val resultCode = result.resultCode
             val data = result.data
             if (resultCode == Activity.RESULT_OK) {
-                //Image Uri will not be null for RESULT_OK
                 val fileUri = data?.data!!
                 val img = findViewById<CircleImageView>(R.id.img)
                 mProfileUri = fileUri.toString()
@@ -118,7 +124,13 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
 
-    private fun blockChanges(name: EditText, mail: EditText, password:EditText, btnRegistration:Button, boolean: Boolean){
+    private fun blockChanges(
+        name: EditText,
+        mail: EditText,
+        password: EditText,
+        btnRegistration: Button,
+        boolean: Boolean
+    ) {
         name.isLongClickable = boolean
         name.isCursorVisible = boolean
         mail.isLongClickable = boolean

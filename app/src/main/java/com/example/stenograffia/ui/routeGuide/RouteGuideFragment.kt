@@ -33,13 +33,12 @@ class RouteGuideFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_route_guide, container, false)
 
         //Find view by id
-        val image:ImageView = root.findViewById(R.id.image)
+        val image: ImageView = root.findViewById(R.id.image)
         val name: TextView = root.findViewById(R.id.name)
         val playPause: ImageView = root.findViewById(R.id.play_pause)
         val seekBar: SeekBar = root.findViewById(R.id.seek_bar)
         val description: TextView = root.findViewById(R.id.description)
 
-        val routeId = requireArguments().getString("routeId")
         val placeId = requireArguments().getString("placeId")
 
         routeGuideViewModel = ViewModelProvider(this, RouteGuideModelFactory(placeId!!)).get(
@@ -70,7 +69,7 @@ class RouteGuideFragment : Fragment() {
             }, 0, 1000)
 
             playPause.setOnClickListener {
-                if (mediaPlayer.isPlaying){
+                if (mediaPlayer.isPlaying) {
                     mediaPlayer.pause()
                     playPause.setImageResource(R.drawable.ic_play)
                 } else {

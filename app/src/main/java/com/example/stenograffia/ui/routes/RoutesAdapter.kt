@@ -13,10 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.stenograffia.R
 import com.example.stenograffia.ui.data.Models.SimpleRoute
 
-class RoutesAdapter(private val routes: ArrayList<SimpleRoute?>, private val fromAllRoutes: Boolean):RecyclerView.Adapter<RoutesAdapter.ViewHolder>() {
+class RoutesAdapter(
+    private val routes: ArrayList<SimpleRoute?>,
+    private val fromAllRoutes: Boolean
+) : RecyclerView.Adapter<RoutesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.element_routes_recycler_view, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.element_routes_recycler_view, parent, false)
         return ViewHolder(view)
     }
 
@@ -27,11 +31,11 @@ class RoutesAdapter(private val routes: ArrayList<SimpleRoute?>, private val fro
         holder.routeLength.text = route.Length
         val bundle = Bundle()
         bundle.putString("routeId", route.Id)
-        if (fromAllRoutes){
+        if (fromAllRoutes) {
             holder.route.setOnClickListener { view ->
                 view.findNavController().navigate(R.id.routeFragment, bundle)
             }
-        }else{
+        } else {
             holder.route.setOnClickListener { view ->
                 view.findNavController().navigate(R.id.boughtRouteFragment, bundle)
             }

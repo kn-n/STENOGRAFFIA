@@ -27,14 +27,14 @@ class ProfileFragment : Fragment() {
     ): View? {
 
         val root = inflater.inflate(R.layout.fragment_profile, container, false)
-        initFirebase()
-
         //Find view by id
+
         val imgProfile = root.findViewById<CircleImageView>(R.id.user_img)
         val userName = root.findViewById<TextView>(R.id.user_name)
         val userEmail = root.findViewById<TextView>(R.id.user_email)
         val btnEdit = root.findViewById<Button>(R.id.btn_edit)
 
+        initFirebase()
         profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
 

@@ -54,15 +54,16 @@ class SurfaceExchangeFragment : Fragment() {
                     REF_STORAGE_ROOT.child(FOLDER_SURFACE_EXCHANGE).child(AUTH.currentUser!!.uid)
                         .child(uid).putFile(mExchangeUri.toUri()).addOnCompleteListener {
                             if (it.isSuccessful) {
-                                REF_STORAGE_ROOT.child(FOLDER_SURFACE_EXCHANGE).child(AUTH.currentUser!!.uid)
+                                REF_STORAGE_ROOT.child(FOLDER_SURFACE_EXCHANGE)
+                                    .child(AUTH.currentUser!!.uid)
                                     .child(uid).downloadUrl.addOnCompleteListener {
                                         if (it.isSuccessful) {
-                                            REF_DATABASE_ROOT.child(NODE_SURFACE_EXCHANGE).child(uid)
-                                                .child("imgUrlForExchange").setValue(it.result.toString())
+                                            REF_DATABASE_ROOT.child(NODE_SURFACE_EXCHANGE)
+                                                .child(uid)
+                                                .child("imgUrlForExchange")
+                                                .setValue(it.result.toString())
                                         }
                                     }
-                            } else {
-                                Toast.makeText(context,"Не успел:(", Toast.LENGTH_LONG).show()
                             }
                         }
                     val surface = Surface(

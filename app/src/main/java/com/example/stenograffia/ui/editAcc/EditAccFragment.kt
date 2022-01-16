@@ -38,7 +38,6 @@ class EditAccFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_edit_acc, container, false)
 
-        //Find view by id
         val img = root.findViewById<CircleImageView>(R.id.img)
         val username = root.findViewById<EditText>(R.id.username)
         val email = root.findViewById<EditText>(R.id.email)
@@ -83,16 +82,12 @@ class EditAccFragment : Fragment() {
                                                 .child("imgUri").setValue(urlFromStorage)
                                         }
                                     }
-                                } else {
-//                                    Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
                                 }
                             }
                         REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid)
                             .child("name")
                             .setValue(username.text.toString())
                         view.findNavController().navigate(R.id.nav_profile)
-                    } else {
-//                        Toast.makeText(context, "Не успел:(", Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -107,11 +102,9 @@ class EditAccFragment : Fragment() {
             val resultCode = result.resultCode
             val data = result.data
             if (resultCode == Activity.RESULT_OK) {
-                //Image Uri will not be null for RESULT_OK
                 val fileUri = data?.data!!
                 val img = requireView().findViewById<CircleImageView>(R.id.img)
                 mProfileUri = fileUri.toString()
-
                 img.setImageURI(fileUri)
             } else if (resultCode == ImagePicker.RESULT_ERROR) {
                 Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()

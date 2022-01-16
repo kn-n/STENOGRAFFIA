@@ -30,10 +30,9 @@ class RouteFragment : Fragment() {
 
         val routeId = requireArguments().getString("routeId")
 
-        //Find view by id
-        val name : TextView = root.findViewById(R.id.name)
+        val name: TextView = root.findViewById(R.id.name)
         val description: TextView = root.findViewById(R.id.inf_object)
-        val btnBuy : Button = root.findViewById(R.id.btn_buy)
+        val btnBuy: Button = root.findViewById(R.id.btn_buy)
         val imageSlider: SliderView = root.findViewById(R.id.imageSlider)
 
         routeViewModel =

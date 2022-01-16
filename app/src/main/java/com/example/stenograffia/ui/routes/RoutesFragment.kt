@@ -33,7 +33,6 @@ class RoutesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_routes, container, false)
 
         //Find view by id
-//        val routeOne: Button = root.findViewById(R.id.route_one)
         val allRoutes: TextView = root.findViewById(R.id.all_routes)
         val myRoutes: TextView = root.findViewById(R.id.my_routes)
         val routesRecyclerView: RecyclerView = root.findViewById(R.id.routes_recycler_view)
@@ -65,21 +64,21 @@ class RoutesFragment : Fragment() {
 
             routesViewModel.allRoutes.observe(viewLifecycleOwner, Observer {
                 routes = it
-                routesRecyclerView.adapter = RoutesAdapter(routes,true)
+                routesRecyclerView.adapter = RoutesAdapter(routes, true)
             })
         }
 
         return root
     }
 
-    private fun selectAllRoutes(allRoutes: TextView, myRoutes: TextView){
+    private fun selectAllRoutes(allRoutes: TextView, myRoutes: TextView) {
         allRoutes.setTextAppearance(R.style.selected_file_routes)
         allRoutes.setBackgroundResource(R.drawable.underlined)
         myRoutes.setTextAppearance(R.style.unselected_file_routes)
         myRoutes.setBackgroundResource(R.drawable.not_underlined)
     }
 
-    private fun selectMyRoutes(allRoutes: TextView, myRoutes: TextView){
+    private fun selectMyRoutes(allRoutes: TextView, myRoutes: TextView) {
         myRoutes.setTextAppearance(R.style.selected_file_routes)
         myRoutes.setBackgroundResource(R.drawable.underlined)
         allRoutes.setTextAppearance(R.style.unselected_file_routes)

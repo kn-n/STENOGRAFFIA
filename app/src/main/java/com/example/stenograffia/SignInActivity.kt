@@ -25,14 +25,14 @@ class SignInActivity : AppCompatActivity() {
 
         btnLogIn.setOnClickListener {
             if (mail.text.isNotEmpty()
-                && password.text.isNotEmpty()) {
-                loading(this,loading)
+                && password.text.isNotEmpty()
+            ) {
+                loading(this, loading)
                 blockChanges(mail, password, btnLogIn, false)
                 AUTH.signInWithEmailAndPassword(mail.text.toString(), password.text.toString())
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             Log.d("UP/IN/OUT", "signInWithEmail:success")
-                            val user = AUTH.currentUser
                             val intent = Intent(this, MenuActivity::class.java)
                             startActivity(intent)
                         } else {
@@ -45,7 +45,7 @@ class SignInActivity : AppCompatActivity() {
                             ).show()
                         }
                     }
-            }else{
+            } else {
                 blockChanges(mail, password, btnLogIn, true)
                 Toast.makeText(baseContext, "Заполните все поля", Toast.LENGTH_SHORT).show()
             }
@@ -58,7 +58,13 @@ class SignInActivity : AppCompatActivity() {
 
 
     }
-    private fun blockChanges(mail: EditText, password:EditText, btnLogIn:Button, boolean: Boolean){
+
+    private fun blockChanges(
+        mail: EditText,
+        password: EditText,
+        btnLogIn: Button,
+        boolean: Boolean
+    ) {
         mail.isLongClickable = boolean
         mail.isCursorVisible = boolean
         password.isLongClickable = boolean

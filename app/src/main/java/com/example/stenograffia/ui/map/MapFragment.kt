@@ -31,7 +31,6 @@ class MapFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_map, container, false)
-
         //Find by id
         map = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 

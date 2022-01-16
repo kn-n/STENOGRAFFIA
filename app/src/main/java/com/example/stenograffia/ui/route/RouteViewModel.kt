@@ -21,19 +21,20 @@ class RouteViewModel(val id: String) : ViewModel() {
 
     private val _statusOfRoute = MutableLiveData<Boolean>().apply {
         initFirebase()
-        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("boughtRoutes").addValueEventListener(
-            AppValueEventListener{ array ->
-                val arrayIds = array.children.map { it.getValue(String::class.java) }
-                value = arrayIds.contains(id)
-            }
-        )
+        REF_DATABASE_ROOT.child(NODE_USERS).child(AUTH.currentUser!!.uid).child("boughtRoutes")
+            .addValueEventListener(
+                AppValueEventListener { array ->
+                    val arrayIds = array.children.map { it.getValue(String::class.java) }
+                    value = arrayIds.contains(id)
+                }
+            )
     }
     val statusOfRoute: LiveData<Boolean> = _statusOfRoute
 
     private val _promoImages = MutableLiveData<ArrayList<String?>>().apply {
         initFirebase()
         REF_DATABASE_ROOT.child(NODE_ROUTES).child(id).child("PromoImgs").addValueEventListener(
-            AppValueEventListener{ ids ->
+            AppValueEventListener { ids ->
                 val images = ids.children.map { it.getValue(String::class.java) }
                 value = ArrayList(images)
             }

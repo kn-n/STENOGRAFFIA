@@ -44,11 +44,6 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     lateinit var googleMapLate: GoogleMap
     private var idRoute: String = ""
 
-    private var originLatitude: Double = 56.901685
-    private var originLongitude: Double = 60.638509
-    private var destinationLatitude: Double = 56.788791
-    private var destinationLongitude: Double = 60.647781
-
     private var origin: LatLng = LatLng(56.838358, 60.603405)
     private var destination: LatLng = LatLng(0.0, 0.0)
     private var waypoints: String = ""
@@ -59,15 +54,6 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         override fun onLocationResult(locationResult: LocationResult?) {
             if (locationResult == null) {
                 return
-            }
-
-            for (location in locationResult.locations) {
-//                Log.d("hey!", "onLocationResult: $location")
-//                val markerCords = LatLng(location.latitude, location.longitude)
-//                googleMapLate.addMarker(
-//                    MarkerOptions()
-//                        .position(markerCords)
-//                )
             }
         }
     }
@@ -158,11 +144,9 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             val lineOptions = PolylineOptions()
             initFirebase()
             for (i in result.indices) {
-                REF_DATABASE_ROOT.child(NODE_ROUTES).child(idRoute).child("polyline")
-                    .setValue(result[i])
                 lineOptions.addAll(result[i])
                 lineOptions.width(10f)
-                lineOptions.color(Color.rgb(252,214,0))
+                lineOptions.color(Color.rgb(252, 214, 0))
                 lineOptions.geodesic(true)
             }
             googleMapLate.addPolyline(lineOptions)
@@ -171,20 +155,24 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
 
     override fun onMapReady(p0: GoogleMap) {
         googleMapLate = p0
-        if (ActivityCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             enableUserLocation()
             zoomToUserLocation()
         } else {
             boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { places ->
                 boughtRouteViewModel.points.observe(viewLifecycleOwner, Observer { points ->
-                    for (point in points){
-                        if (places.contains(point!!.id)){
+                    for (point in points) {
+                        if (places.contains(point!!.id)) {
                             when (point.id) {
-                                places[places.size-1] -> destination =
+                                places[places.size - 1] -> destination =
                                     LatLng(point.latitude.toDouble(), point.longitude.toDouble())
                                 places[0] -> origin =
                                     LatLng(point.latitude.toDouble(), point.longitude.toDouble())
-                                else -> waypoints+="|${point.latitude},${point.longitude}"
+                                else -> waypoints += "|${point.latitude},${point.longitude}"
                             }
 
                             val marker =
@@ -204,14 +192,14 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         }
     }
 
-    private fun direction(){
+    private fun direction() {
         boughtRouteViewModel.placesId.observe(viewLifecycleOwner, Observer { places ->
             boughtRouteViewModel.points.observe(viewLifecycleOwner, Observer { points ->
-                for (point in points){
-                    if (places.contains(point!!.id)){
-                        if (point.id == places[places.size-1]) destination =
+                for (point in points) {
+                    if (places.contains(point!!.id)) {
+                        if (point.id == places[places.size - 1]) destination =
                             LatLng(point.latitude.toDouble(), point.longitude.toDouble())
-                        waypoints+="|${point.latitude},${point.longitude}"
+                        waypoints += "|${point.latitude},${point.longitude}"
 
                         val marker =
                             LatLng(point.latitude.toDouble(), point.longitude.toDouble())
@@ -222,10 +210,10 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
                         )
                     }
                 }
-            googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
-            val urll = getDirectionURL(origin, destination, waypoints, apiKey)
-            GetDirection(urll).execute()
-            googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+                googleMapLate.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
+                val urll = getDirectionURL(origin, destination, waypoints, apiKey)
+                GetDirection(urll).execute()
+                googleMapLate.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 14F))
             })
         })
     }
@@ -252,12 +240,11 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             ) != PackageManager.PERMISSION_GRANTED
         ) {
         } else {
-        val locationTask: Task<Location>? = fusedLocationProviderClient.lastLocation
-        locationTask!!.addOnSuccessListener {
-            origin = LatLng(it.latitude, it.longitude)
-            direction()
-//            googleMapLate.addMarker(MarkerOptions().position(latLng))
-        }
+            val locationTask: Task<Location>? = fusedLocationProviderClient.lastLocation
+            locationTask!!.addOnSuccessListener {
+                origin = LatLng(it.latitude, it.longitude)
+                direction()
+            }
         }
     }
 
@@ -265,17 +252,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
         boughtRouteViewModel.points.observe(viewLifecycleOwner, Observer {
             val bundle = Bundle()
             val points = it
-//            var i = 0
-//            while (i < points.size) {
-//                if (points[i]!!.latitude == marker.position.latitude.toString() && points[i]!!.longitude == marker.position.longitude.toString()) {
-//                    bundle.putString("routeId", idRoute)
-//                    bundle.putString("placeId", (i + 1).toString())
-//                    break
-//                } else {
-//                    i += 1
-//                }
-//            }
-            for (i in 0 until points.size){
+            for (i in 0 until points.size) {
                 if (points[i]!!.latitude == marker.position.latitude.toString() && points[i]!!.longitude == marker.position.longitude.toString()) {
                     bundle.putString("routeId", idRoute)
                     bundle.putString("placeId", points[i]!!.id)
@@ -340,11 +317,11 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
             ) != PackageManager.PERMISSION_GRANTED
         ) {
         } else {
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
+            fusedLocationProviderClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
         }
     }
 
@@ -357,11 +334,7 @@ class BoughtRouteFragment : Fragment(), GoogleMap.OnMarkerClickListener, OnMapRe
     ) { permissions ->
         when {
             permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                // Precise location access granted.
                 checkSettingsAndStartLocationUpdates()
-            }
-            permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                // Only approximate location access granted.
             }
             else -> {
                 // No location access granted.
